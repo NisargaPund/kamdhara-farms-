@@ -113,13 +113,9 @@ export async function updateOrderStatus(
   paymentStatus?: string,
   extras?: { tracking_number?: string; estimated_delivery?: string; carrier?: string }
 ) {
-  const selectFields = extras
-    ? 'status, payment_status, tracking_number, carrier, estimated_delivery'
-    : 'status, payment_status';
-
   const { data: existing, error: fetchError } = await supabase
     .from('orders')
-    .select(selectFields)
+    .select('status, payment_status, tracking_number, carrier, estimated_delivery')
     .eq('id', orderId)
     .single();
 
