@@ -1,13 +1,16 @@
-# Set in Netlify UI → Site configuration → Environment variables (required for build):
+# Netlify deploy config for Kamdhara Farms (Vite + React SPA)
+#
+# GitHub repo root IS this app — do NOT set Base directory = "project" in Netlify UI.
+# Required env vars (Netlify UI → Environment variables):
 #   VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_RAZORPAY_KEY_ID
-# Optional: VITE_SITE_URL (your live site URL for auth email redirects)
+# Optional: VITE_SITE_URL (production URL for auth email redirects)
 
 [build]
   command = "npm run build"
   publish = "dist"
 
-# SPA fallback — serve index.html for client routes (/login, /admin/login, etc.)
-# Do not use force=true here; it would rewrite /assets/* to HTML and break the app.
+# SPA fallback — client routes (/login, /admin/login, etc.)
+# dist/404.html (copy of index.html) is a fallback when redirect rules are not processed.
 [[redirects]]
   from = "/*"
   to = "/index.html"
