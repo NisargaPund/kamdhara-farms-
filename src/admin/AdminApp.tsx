@@ -10,9 +10,9 @@ import AdminLoginPage from './pages/AdminLoginPage';
 export default function AdminApp() {
   return (
     <Routes>
-      <Route path="/login" element={<AdminLoginPage />} />
+      <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route
-        path="/"
+        path="/admin"
         element={
           <ProtectedAdminRoute>
             <AdminLayout />
@@ -24,7 +24,7 @@ export default function AdminApp() {
         <Route path="orders" element={<AdminOrdersPage />} />
         <Route path="customers" element={<AdminCustomersPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/admin" replace />} />
+      <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
     </Routes>
   );
 }
