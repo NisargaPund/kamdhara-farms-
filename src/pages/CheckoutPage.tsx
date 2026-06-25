@@ -10,6 +10,8 @@ import { createStoreOrder, markOrderPaymentFailed } from '../lib/orders';
 import { sendOrderNotification } from '../lib/notifications';
 import { initiateRazorpayPayment, verifyRazorpayPayment, RAZORPAY_SETUP_HINT } from '../lib/razorpay';
 import { formatPrice } from '../lib/utils';
+import { formatBottleLabel } from '../lib/variants';
+import ProductImage from '../components/product/ProductImage';
 import toast from 'react-hot-toast';
 import type { Address } from '../types';
 
@@ -338,9 +340,15 @@ export default function CheckoutPage() {
                 {items.map((item) => (
                   <div key={item.id} className="flex justify-between py-2">
                     <div className="flex items-center space-x-3">
-                      <img src={item.image_url} alt={item.product_name} className="w-12 h-12 object-cover rounded" />
+                      <div className="w-12 h-12 rounded bg-cream p-0.5 shrink-0">
+                        <ProductImage
+                          src={item.image_url}
+                          alt={item.product_name}
+                          className="w-full h-full"
+                        />
+                      </div>
                       <span className="text-medium-brown">
-                        {item.product_name} ({item.size}) x {item.quantity}
+                        {item.product_name} — {formatBottleLabel(item.quantity, item.size)}
                       </span>
                     </div>
                     <span className="font-medium">{formatPrice(item.price * item.quantity)}</span>

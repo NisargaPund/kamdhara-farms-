@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Menu, X, User, Heart, LogOut } from 'lucide-react';
 import { useCartStore } from '../../store/cart';
 import { useAuth } from '../../lib/auth';
+import { SITE_LOGO } from '../../lib/imagePaths';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,13 +22,15 @@ export default function Header() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-cream/95 backdrop-blur-sm shadow-sm">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="font-serif text-2xl font-bold text-dark-brown">
-              Kamdhara Farms
-            </span>
+    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-cream/95 backdrop-blur-sm shadow-sm">
+      <nav className="max-w-7xl mx-auto w-full min-w-0 px-4 sm:px-6 lg:px-8">
+        <div className="flex min-w-0 items-center justify-between h-14 md:h-20">
+          <Link to="/" className="flex min-w-0 shrink items-center max-w-[42%] sm:max-w-none">
+            <img
+              src={SITE_LOGO}
+              alt="Kamdhara Farms"
+              className="h-9 sm:h-10 md:h-14 w-auto max-w-full object-contain"
+            />
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
@@ -46,22 +49,22 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="flex items-center space-x-4">
-            <Link to="/wishlist" className="p-2 text-dark-brown hover:text-gold transition-colors">
-              <Heart className="w-5 h-5" />
+          <div className="flex shrink-0 items-center space-x-1.5 sm:space-x-3 md:space-x-4">
+            <Link to="/wishlist" className="p-1.5 md:p-2 text-dark-brown hover:text-gold transition-colors">
+              <Heart className="w-4 h-4 md:w-5 md:h-5" />
             </Link>
-            <Link to="/cart" className="relative p-2 text-dark-brown hover:text-gold transition-colors">
-              <ShoppingBag className="w-5 h-5" />
+            <Link to="/cart" className="relative p-1.5 md:p-2 text-dark-brown hover:text-gold transition-colors">
+              <ShoppingBag className="w-4 h-4 md:w-5 md:h-5" />
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-gold text-dark-brown text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 bg-gold text-dark-brown text-[10px] md:text-xs font-bold rounded-full w-4 h-4 md:w-5 md:h-5 flex items-center justify-center">
                   {itemCount}
                 </span>
               )}
             </Link>
             {user ? (
               <div className="relative group">
-                <button className="flex items-center space-x-1 p-2 text-dark-brown hover:text-gold transition-colors">
-                  <User className="w-5 h-5" />
+                <button className="flex items-center space-x-1 p-1.5 md:p-2 text-dark-brown hover:text-gold transition-colors">
+                  <User className="w-4 h-4 md:w-5 md:h-5" />
                   <span className="hidden lg:inline text-sm">{user.email?.split('@')[0]}</span>
                 </button>
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
@@ -81,21 +84,21 @@ export default function Header() {
                 </div>
               </div>
             ) : (
-              <Link to="/login" className="p-2 text-dark-brown hover:text-gold transition-colors">
-                <User className="w-5 h-5" />
+              <Link to="/login" className="p-1.5 md:p-2 text-dark-brown hover:text-gold transition-colors">
+                <User className="w-4 h-4 md:w-5 md:h-5" />
               </Link>
             )}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-dark-brown"
+              className="md:hidden p-1.5 text-dark-brown"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-medium-brown/20">
+          <div className="md:hidden py-3 border-t border-medium-brown/20">
             {navigation.map((item) => (
               <Link
                 key={item.name}

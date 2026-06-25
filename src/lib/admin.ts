@@ -218,6 +218,7 @@ export async function createProduct(form: ProductFormData) {
       size: v.size,
       price: v.price,
       stock: v.stock,
+      image_url: v.image_url?.trim() || '',
     }));
 
   if (variants.length > 0) {
@@ -276,7 +277,12 @@ export async function updateProduct(
     if (variant.id) {
       const { error: variantError } = await supabase
         .from('product_variants')
-        .update({ size: variant.size, price: variant.price, stock: variant.stock })
+        .update({
+          size: variant.size,
+          price: variant.price,
+          stock: variant.stock,
+          image_url: variant.image_url?.trim() || '',
+        })
         .eq('id', variant.id);
       if (variantError) throw variantError;
     } else if (variant.price > 0) {
@@ -285,6 +291,7 @@ export async function updateProduct(
         size: variant.size,
         price: variant.price,
         stock: variant.stock,
+        image_url: variant.image_url?.trim() || '',
       });
       if (insertError) throw insertError;
     }

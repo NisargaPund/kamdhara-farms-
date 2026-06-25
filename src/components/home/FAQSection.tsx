@@ -25,21 +25,21 @@ export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-12 md:py-20 bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
-          <span className="text-gold text-sm tracking-widest uppercase">FAQ</span>
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-dark-brown mt-2">
+          <span className="text-gold text-xs md:text-sm tracking-widest uppercase">FAQ</span>
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-dark-brown mt-1.5 md:mt-2">
             Frequently Asked Questions
           </h2>
         </motion.div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {faqs.map((faq, index) => (
             <motion.div
               key={index}
@@ -50,18 +50,18 @@ export default function FAQSection() {
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex items-center justify-between p-4 text-left bg-cream hover:bg-cream/80 transition-colors"
+                className="w-full flex items-center justify-between p-3 md:p-4 text-left bg-cream hover:bg-cream/80 transition-colors gap-3"
               >
-                <span className="font-semibold text-dark-brown">{faq.question}</span>
+                <span className="font-semibold text-dark-brown text-sm md:text-base">{faq.question}</span>
                 {openIndex === index ? (
-                  <Minus className="w-5 h-5 text-gold" />
+                  <Minus className="w-4 h-4 md:w-5 md:h-5 text-gold shrink-0" />
                 ) : (
-                  <Plus className="w-5 h-5 text-gold" />
+                  <Plus className="w-4 h-4 md:w-5 md:h-5 text-gold shrink-0" />
                 )}
               </button>
               {openIndex === index && (
-                <div className="p-4 bg-white">
-                  <p className="text-medium-brown">{faq.answer}</p>
+                <div className="p-3 md:p-4 bg-white">
+                  <p className="text-medium-brown text-sm md:text-base">{faq.answer}</p>
                 </div>
               )}
             </motion.div>

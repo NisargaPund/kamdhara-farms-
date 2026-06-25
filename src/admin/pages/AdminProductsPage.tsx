@@ -13,6 +13,8 @@ import { useAuth } from '../../lib/auth';
 import { formatStorageUploadError, STORAGE_MIGRATION_HINT, uploadProductImage } from '../../lib/storage';
 import { useAdmin } from '../../lib/useAdmin';
 import { formatPrice } from '../../lib/utils';
+import { formatBottleLabel } from '../../lib/variants';
+import ProductImage from '../../components/product/ProductImage';
 import { getDisplayPrice } from '../../lib/gst';
 import type { Product, ProductFormData, ProductVariant } from '../../types';
 
@@ -41,7 +43,7 @@ const emptyForm: ProductFormData = {
   featured: false,
   apply_gst: false,
   gst_rate: 5,
-  variants: [{ size: '500ml', price: 0, stock: 0 }],
+  variants: [{ size: '500ml', price: 0, stock: 0, image_url: '' }],
 };
 
 export default function AdminProductsPage() {
@@ -55,8 +57,11 @@ export default function AdminProductsPage() {
   const [saving, setSaving] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const [galleryUploading, setGalleryUploading] = useState(false);
+  const [variantImageUploading, setVariantImageUploading] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+  const variantFileInputRef = useRef<HTMLInputElement>(null);
+  const variantUploadIndexRef = useRef<number>(0);
 
   const loadProducts = async () => {
     try {
@@ -99,6 +104,7 @@ export default function AdminProductsPage() {
         size: v.size,
         price: v.price,
         stock: v.stock,
+        image_url: v.image_url || '',
       })),
     });
     setShowForm(true);
@@ -249,6 +255,44 @@ export default function AdminProductsPage() {
     }));
   };
 
+  const triggerVariantImageUpload = (index: number) => {
+    variantUploadIndexRef.current = index;
+    variantFileInputRef.current?.click();
+  };
+
+  const handleVariantImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const index = variantUploadIndexRef.current;
+    if (!file) return;
+
+    if (!ensureCanUpload()) {
+      e.target.value = '';
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      e.target.value = '';
+      return;
+    }
+
+    setVariantImageUploading(index);
+    try {
+      const url = await uploadProductImage(file);
+      updateVariant(index, 'image_url', url);
+      toast.success('Variant image uploaded');
+    } catch (error) {
+      const message = formatStorageUploadError(error);
+      toast.error(message);
+      if (message.toLowerCase().includes('bucket') || message.toLowerCase().includes('policy')) {
+        toast(STORAGE_MIGRATION_HINT, { duration: 8000, icon: 'ℹ️' });
+      }
+    } finally {
+      setVariantImageUploading(null);
+      e.target.value = '';
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
@@ -289,11 +333,13 @@ export default function AdminProductsPage() {
                   <tr key={product.id} className="border-b border-gray-50 hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-3">
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className="w-12 h-12 rounded-lg object-cover"
-                        />
+                        <div className="w-12 h-12 rounded-lg bg-cream p-1 shrink-0">
+                          <ProductImage
+                            src={product.image_url}
+                            alt={product.name}
+                            className="w-full h-full"
+                          />
+                        </div>
                         <div>
                           <p className="font-medium text-dark-brown">{product.name}</p>
                           <p className="text-sm text-gold">From {formatPrice(minPrice)}</p>
@@ -302,7 +348,7 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4 text-medium-brown">{product.category}</td>
                     <td className="px-6 py-4 text-medium-brown">
-                      {product.product_variants.map((v) => v.size).join(', ')}
+                      {product.product_variants.map((v) => formatBottleLabel(1, v.size)).join(' · ')}
                     </td>
                     <td className="px-6 py-4">
                       <span
@@ -416,11 +462,11 @@ export default function AdminProductsPage() {
               <div>
                 <label className="block text-sm font-medium text-dark-brown mb-1">Product Image</label>
                 {form.image_url && (
-                  <div className="mb-3">
-                    <img
+                  <div className="mb-3 w-32 h-32 rounded-lg bg-cream p-2 border border-medium-brown/30">
+                    <ProductImage
                       src={form.image_url}
                       alt="Product preview"
-                      className="w-32 h-32 rounded-lg object-cover border border-medium-brown/30"
+                      className="w-full h-full"
                     />
                   </div>
                 )}
@@ -460,11 +506,11 @@ export default function AdminProductsPage() {
                 {form.gallery_urls.length > 0 && (
                   <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 mb-3">
                     {form.gallery_urls.map((url, index) => (
-                      <div key={`${url}-${index}`} className="relative group">
-                        <img
+                      <div key={`${url}-${index}`} className="relative group bg-cream p-1.5 rounded-lg border border-medium-brown/30">
+                        <ProductImage
                           src={url}
                           alt={`Gallery ${index + 1}`}
-                          className="w-full aspect-square rounded-lg object-cover border border-medium-brown/30"
+                          className="w-full aspect-square"
                         />
                         <button
                           type="button"
@@ -562,28 +608,70 @@ export default function AdminProductsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-dark-brown mb-2">Size Variants</label>
+                <p className="text-xs text-medium-brown mb-3">
+                  Add sizes smallest to largest (e.g. 500ml, 1L). Upload a jar photo per size so the
+                  product page switches images when customers pick a size. Leave variant image empty to
+                  use the main product image.
+                </p>
+                <input
+                  ref={variantFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleVariantImageUpload}
+                  className="hidden"
+                />
                 {form.variants.map((variant, i) => (
-                  <div key={i} className="grid grid-cols-3 gap-2 mb-2">
-                    <input
-                      placeholder="Size (e.g. 500ml)"
-                      value={variant.size}
-                      onChange={(e) => updateVariant(i, 'size', e.target.value)}
-                      className="p-2 border border-medium-brown/30 rounded-lg focus:outline-none focus:border-gold"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Price"
-                      value={variant.price || ''}
-                      onChange={(e) => updateVariant(i, 'price', Number(e.target.value))}
-                      className="p-2 border border-medium-brown/30 rounded-lg focus:outline-none focus:border-gold"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Stock"
-                      value={variant.stock || ''}
-                      onChange={(e) => updateVariant(i, 'stock', Number(e.target.value))}
-                      className="p-2 border border-medium-brown/30 rounded-lg focus:outline-none focus:border-gold"
-                    />
+                  <div key={i} className="border border-medium-brown/20 rounded-lg p-3 mb-3 space-y-2">
+                    <div className="grid grid-cols-3 gap-2">
+                      <input
+                        placeholder="Size (e.g. 500ml)"
+                        value={variant.size}
+                        onChange={(e) => updateVariant(i, 'size', e.target.value)}
+                        className="p-2 border border-medium-brown/30 rounded-lg focus:outline-none focus:border-gold"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Price"
+                        value={variant.price || ''}
+                        onChange={(e) => updateVariant(i, 'price', Number(e.target.value))}
+                        className="p-2 border border-medium-brown/30 rounded-lg focus:outline-none focus:border-gold"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Stock"
+                        value={variant.stock || ''}
+                        onChange={(e) => updateVariant(i, 'stock', Number(e.target.value))}
+                        className="p-2 border border-medium-brown/30 rounded-lg focus:outline-none focus:border-gold"
+                      />
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                      {variant.image_url && (
+                        <div className="w-16 h-16 rounded-lg bg-cream p-1 border border-medium-brown/30 flex-shrink-0">
+                          <ProductImage
+                            src={variant.image_url}
+                            alt={`${variant.size || 'Variant'} jar`}
+                            className="w-full h-full"
+                          />
+                        </div>
+                      )}
+                      <input
+                        placeholder="Variant image URL (optional — e.g. 500ml jar photo)"
+                        value={variant.image_url || ''}
+                        onChange={(e) => updateVariant(i, 'image_url', e.target.value)}
+                        className="flex-1 p-2 border border-medium-brown/30 rounded-lg focus:outline-none focus:border-gold text-sm"
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        isLoading={variantImageUploading === i}
+                        onClick={() => triggerVariantImageUpload(i)}
+                        className="whitespace-nowrap"
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        {variantImageUploading === i ? 'Uploading...' : 'Upload Jar Photo'}
+                      </Button>
+                    </div>
                   </div>
                 ))}
                 <button
@@ -591,7 +679,7 @@ export default function AdminProductsPage() {
                   onClick={() =>
                     setForm((f) => ({
                       ...f,
-                      variants: [...f.variants, { size: '', price: 0, stock: 0 }],
+                      variants: [...f.variants, { size: '', price: 0, stock: 0, image_url: '' }],
                     }))
                   }
                   className="text-sm text-gold hover:underline"

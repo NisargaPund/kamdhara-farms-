@@ -45,12 +45,12 @@ export default function ShopPage() {
           </p>
         </motion.div>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 min-w-0">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={'px-6 py-2 rounded-full font-medium transition-all ' + (
+              className={'px-3 py-1.5 text-sm sm:px-6 sm:py-2 sm:text-base rounded-full font-medium transition-all ' + (
                 selectedCategory === category
                   ? 'bg-gold text-dark-brown shadow-md'
                   : 'bg-white text-dark-brown hover:bg-gold/20'
@@ -66,9 +66,11 @@ export default function ShopPage() {
             <p className="text-medium-brown">Loading products...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 items-stretch min-w-0">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <div key={product.id} className="min-w-0">
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
         )}

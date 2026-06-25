@@ -5,26 +5,26 @@ import { STORY_IMAGE } from '../../lib/imagePaths';
 
 export default function StorySection() {
   return (
-    <section className="py-20 bg-cream">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-10 md:gap-12 lg:gap-16 items-center">
+    <section className="py-12 md:py-20 bg-cream w-full min-w-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full min-w-0">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center min-w-0">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative w-full max-w-md mx-auto md:mx-0"
+            className="relative w-full min-w-0 max-w-md mx-auto md:mx-0 max-lg:overflow-x-clip"
           >
-            <div className="rounded-2xl overflow-hidden shadow-2xl">
+            <div className="rounded-2xl overflow-hidden shadow-2xl max-w-full">
               <img
                 src={STORY_IMAGE}
                 alt="Kamdhara Farms — traditional ghee crafted with care in Maharashtra"
                 loading="lazy"
-                className="w-full h-auto object-contain"
+                className="w-full max-w-full h-auto object-contain"
               />
             </div>
-            <div className="absolute -bottom-2 -right-2 bg-gold text-dark-brown px-3 py-2 rounded-lg shadow-md">
-              <p className="font-serif text-sm font-bold leading-tight">Proudly</p>
-              <p className="font-serif text-lg font-bold leading-tight">Maharashtra</p>
+            <div className="absolute bottom-2 right-2 lg:-bottom-2 lg:-right-2 bg-gold text-dark-brown px-2.5 py-1.5 md:px-3 md:py-2 rounded-lg shadow-md">
+              <p className="font-serif text-xs md:text-sm font-bold leading-tight">Proudly</p>
+              <p className="font-serif text-base md:text-lg font-bold leading-tight">Maharashtra</p>
             </div>
           </motion.div>
 
@@ -34,11 +34,11 @@ export default function StorySection() {
             viewport={{ once: true }}
             className="flex flex-col justify-center max-w-lg lg:max-w-xl mx-auto md:mx-0 md:pl-2 lg:pl-4"
           >
-            <span className="text-gold text-sm tracking-widest uppercase">Our Story</span>
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-dark-brown mt-2 mb-6 md:mb-8 leading-tight">
+            <span className="text-gold text-xs md:text-sm tracking-widest uppercase">Our Story</span>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-dark-brown mt-1.5 md:mt-2 mb-4 md:mb-8 leading-tight">
               Rooted in Tradition. Crafted with Purity.
             </h2>
-            <div className="space-y-5 text-medium-brown text-base md:text-lg leading-relaxed mb-8">
+            <div className="space-y-4 md:space-y-5 text-medium-brown text-sm md:text-base lg:text-lg leading-relaxed mb-6 md:mb-8">
               <p>
                 Kamdhara Farms was born from a memory that goes back to my childhood — of my grandmother
                 carefully preparing ghee using traditional methods in Maharashtra, filling the home with an
@@ -56,7 +56,9 @@ export default function StorySection() {
               </p>
             </div>
             <Link to="/about">
-              <Button variant="primary">Learn More About Us</Button>
+              <Button variant="primary" className="!text-sm !px-4 !py-2 md:!text-base md:!px-5 md:!py-2.5">
+                Learn More About Us
+              </Button>
             </Link>
           </motion.div>
         </div>

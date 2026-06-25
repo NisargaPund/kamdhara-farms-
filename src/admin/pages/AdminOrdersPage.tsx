@@ -5,6 +5,7 @@ import { getAdminOrderDetail, getAdminOrders, updateOrderStatus } from '../../li
 import { formatSupabaseError } from '../../lib/supabase';
 import { ALL_ORDER_STATUSES, formatOrderStatus, statusBadgeColors } from '../../lib/orderStatus';
 import { formatPrice } from '../../lib/utils';
+import { formatBottleLabel } from '../../lib/variants';
 import Button from '../../components/ui/Button';
 import OrderStatusStepper from '../../components/account/OrderStatusStepper';
 import OrderActivityTimeline from '../components/OrderActivityTimeline';
@@ -362,7 +363,7 @@ export default function AdminOrdersPage() {
                 {selectedOrder.order_items?.map((item) => (
                   <div key={item.id} className="flex justify-between py-2 border-b border-gray-50">
                     <span className="text-medium-brown">
-                      {item.product_name} ({item.size}) x {item.quantity}
+                      {item.product_name} — {formatBottleLabel(item.quantity, item.size)}
                     </span>
                     <span className="font-medium">{formatPrice(item.total)}</span>
                   </div>

@@ -21,6 +21,13 @@ export interface ProductVariant {
   size: string;
   price: number;
   stock: number;
+  image_url?: string;
+}
+
+export interface CartVariantOption {
+  id: string;
+  size: string;
+  price: number;
 }
 
 export interface CartItem {
@@ -33,6 +40,9 @@ export interface CartItem {
   price: number;
   quantity: number;
   image_url: string;
+  product_variants?: CartVariantOption[];
+  apply_gst?: boolean;
+  gst_rate?: number;
 }
 
 export interface Order {
@@ -124,7 +134,7 @@ export interface ProductFormData {
   featured: boolean;
   apply_gst: boolean;
   gst_rate: number;
-  variants: { id?: string; size: string; price: number; stock: number }[];
+  variants: { id?: string; size: string; price: number; stock: number; image_url?: string }[];
 }
 
 export interface Address {

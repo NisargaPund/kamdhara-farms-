@@ -4,6 +4,8 @@ import { Trash2, Minus, Plus, ShoppingBag, ArrowRight } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useCartStore } from '../store/cart';
 import { formatPrice } from '../lib/utils';
+import { formatBottleLabel } from '../lib/variants';
+import ProductImage from '../components/product/ProductImage';
 
 export default function CartPage() {
   const items = useCartStore((state) => state.items);
@@ -50,12 +52,14 @@ export default function CartPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white rounded-xl shadow-sm p-4 flex gap-4"
               >
-                <Link to={'/shop/' + item.product_slug}>
-                  <img
-                    src={item.image_url}
-                    alt={item.product_name}
-                    className="w-24 h-24 object-cover rounded-lg"
-                  />
+                <Link to={'/shop/' + item.product_slug} className="shrink-0">
+                  <div className="w-24 h-24 rounded-lg bg-cream p-1.5">
+                    <ProductImage
+                      src={item.image_url}
+                      alt={item.product_name}
+                      className="w-full h-full"
+                    />
+                  </div>
                 </Link>
                 <div className="flex-1">
                   <Link to={'/shop/' + item.product_slug}>
@@ -63,18 +67,18 @@ export default function CartPage() {
                       {item.product_name}
                     </h3>
                   </Link>
-                  <p className="text-sm text-medium-brown">{item.size}</p>
-                  <p className="text-gold font-semibold mt-1">{formatPrice(item.price)}</p>
+                  <p className="text-sm text-medium-brown">{formatBottleLabel(item.quantity, item.size)}</p>
+                  <p className="text-gold font-semibold mt-1">{formatPrice(item.price)} each</p>
                   <div className="flex items-center space-x-3 mt-2">
                     <button
-                      onClick={() => updateQuantity(item.variant_id, Math.max(1, item.quantity - 1))}
+                      onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
                       className="p-1 rounded border border-medium-brown/30 hover:border-gold"
                     >
                       <Minus className="w-4 h-4" />
                     </button>
                     <span className="font-medium">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.variant_id, item.quantity + 1)}
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       className="p-1 rounded border border-medium-brown/30 hover:border-gold"
                     >
                       <Plus className="w-4 h-4" />
@@ -84,7 +88,7 @@ export default function CartPage() {
                 <div className="text-right">
                   <p className="font-bold text-dark-brown">{formatPrice(item.price * item.quantity)}</p>
                   <button
-                    onClick={() => removeItem(item.variant_id)}
+                    onClick={() => removeItem(item.id)}
                     className="mt-2 text-medium-brown hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="w-5 h-5" />

@@ -24,21 +24,21 @@ const testimonials = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-20 bg-gradient-to-b from-cream to-white">
+    <section className="py-12 md:py-20 bg-gradient-to-b from-cream to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
-          <span className="text-gold text-sm tracking-widest uppercase">Testimonials</span>
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-dark-brown mt-2">
+          <span className="text-gold text-xs md:text-sm tracking-widest uppercase">Testimonials</span>
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-dark-brown mt-1.5 md:mt-2">
             What Our Customers Say
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.name}
@@ -46,17 +46,17 @@ export default function TestimonialsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white p-6 rounded-xl shadow-lg"
+              className="bg-white p-5 md:p-6 rounded-xl shadow-lg"
             >
-              <div className="flex items-center space-x-1 mb-4">
+              <div className="flex items-center space-x-1 mb-3 md:mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-gold fill-gold" />
+                  <Star key={i} className="w-4 h-4 md:w-5 md:h-5 text-gold fill-gold" />
                 ))}
               </div>
-              <p className="text-dark-brown mb-4 italic">"{testimonial.comment}"</p>
-              <div className="border-t pt-4">
-                <p className="font-semibold text-dark-brown">{testimonial.name}</p>
-                <p className="text-sm text-medium-brown">{testimonial.location}</p>
+              <p className="text-dark-brown text-sm md:text-base mb-3 md:mb-4 italic">"{testimonial.comment}"</p>
+              <div className="border-t pt-3 md:pt-4">
+                <p className="font-semibold text-dark-brown text-sm md:text-base">{testimonial.name}</p>
+                <p className="text-xs md:text-sm text-medium-brown">{testimonial.location}</p>
               </div>
             </motion.div>
           ))}

@@ -65,9 +65,23 @@ function formatAddress(addr: OrderRow['shipping_address']): string {
   return lines.join('\n');
 }
 
+function formatSizeDisplay(size: string): string {
+  const normalized = size.trim().toLowerCase().replace(/\s+/g, '');
+  if (/^1(l|liter|litre)$/.test(normalized) || normalized === '1000ml') {
+    return '1 liter';
+  }
+  return size;
+}
+
+function formatBottleLabel(quantity: number, size: string): string {
+  const sizeLabel = formatSizeDisplay(size);
+  const bottleWord = quantity === 1 ? 'bottle' : 'bottles';
+  return `${quantity} ${bottleWord} of ${sizeLabel}`;
+}
+
 function buildProductSummary(items: OrderItem[]): string {
   return items
-    .map((i) => `${i.product_name} (${i.size}) × ${i.quantity} — ${formatPrice(i.total)}`)
+    .map((i) => `${i.product_name} — ${formatBottleLabel(i.quantity, i.size)} — ${formatPrice(i.total)}`)
     .join('\n');
 }
 
@@ -137,7 +151,7 @@ function buildWhatsAppMessage(order: OrderRow, type: NotificationType, trackingU
     : '5–7 business days';
 
   const products = order.order_items
-    .map((i) => `• ${i.product_name} (${i.size}) ×${i.quantity}`)
+    .map((i) => `• ${i.product_name} — ${formatBottleLabel(i.quantity, i.size)}`)
     .join('\n');
 
   return [

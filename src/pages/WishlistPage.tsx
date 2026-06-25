@@ -6,6 +6,7 @@ import Button from '../components/ui/Button';
 import { useAuth } from '../lib/auth';
 import { useWishlistStore } from '../lib/wishlist';
 import { formatPrice } from '../lib/utils';
+import ProductImage from '../components/product/ProductImage';
 
 export default function WishlistPage() {
   const { user } = useAuth();
@@ -85,11 +86,11 @@ export default function WishlistPage() {
               transition={{ delay: index * 0.05 }}
               className="bg-white rounded-xl shadow-sm overflow-hidden"
             >
-              <Link to={'/shop/' + item.product_slug}>
-                <img
+              <Link to={'/shop/' + item.product_slug} className="block bg-cream p-3">
+                <ProductImage
                   src={item.image_url}
                   alt={item.product_name}
-                  className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+                  className="w-full h-48 hover:scale-105 transition-transform duration-300"
                 />
               </Link>
               <div className="p-4">

@@ -15,12 +15,23 @@
   --font-family-sans: 'Inter', system-ui, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-family-sans);
   background-color: var(--color-cream);
   color: var(--color-dark-brown);
 }
 
-html {
-  scroll-behavior: smooth;
+/* Prevent horizontal bleed on mobile/tablet; desktop (lg+) unchanged */
+@media (max-width: 1023px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
 }

@@ -5,8 +5,8 @@ import type { CartItem } from '../types';
 interface CartState {
   items: CartItem[];
   addItem: (item: Omit<CartItem, 'id'>) => void;
-  removeItem: (variantId: string) => void;
-  updateQuantity: (variantId: string, quantity: number) => void;
+  removeItem: (itemId: string) => void;
+  updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
   getItemCount: () => number;
   getSubtotal: () => number;
@@ -38,16 +38,17 @@ export const useCartStore = create<CartState>()(
         });
       },
 
-      removeItem: (variantId) => {
+      removeItem: (itemId) => {
         set((state) => ({
-          items: state.items.filter((i) => i.variant_id !== variantId),
+          items: state.items.filter((i) => i.id !== itemId),
         }));
       },
 
-      updateQuantity: (variantId, quantity) => {
+      updateQuantity: (itemId, quantity) => {
+        const nextQuantity = Math.max(1, quantity);
         set((state) => ({
-          items: state.items.map((i) =>
-            i.variant_id === variantId ? { ...i, quantity } : i
+          items: state.items.map((item) =>
+            item.id === itemId ? { ...item, quantity: nextQuantity } : item
           ),
         }));
       },

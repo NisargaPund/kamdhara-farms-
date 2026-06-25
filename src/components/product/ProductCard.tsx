@@ -11,6 +11,7 @@ import { useAuth } from '../../lib/auth';
 import { useWishlistStore } from '../../lib/wishlist';
 import toast from 'react-hot-toast';
 import type { Product, ProductVariant } from '../../types';
+import ProductImage from './ProductImage';
 
 interface ProductCardProps {
   product: Product & { product_variants: ProductVariant[]; reviews?: { rating: number }[] };
@@ -43,6 +44,13 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
       price: displayPrice,
       quantity: 1,
       image_url: product.image_url,
+      product_variants: product.product_variants.map((v) => ({
+        id: v.id,
+        size: v.size,
+        price: v.price,
+      })),
+      apply_gst: applyGst,
+      gst_rate: gstRate,
     });
     toast.success('Added to cart!');
   };
@@ -74,19 +82,16 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="group"
+        className="group min-w-0"
       >
-        <Link to={'/shop/' + product.slug} className="block">
-          <div className="relative aspect-square overflow-hidden rounded-2xl bg-cream p-2 shadow-[0_4px_24px_-4px_rgba(62,43,31,0.12)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_16px_40px_-8px_rgba(200,167,106,0.35)]">
-            <div className="relative h-full w-full overflow-hidden rounded-xl">
-              <img
-                src={product.image_url}
-                alt={product.name}
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-dark-brown/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gold/10 via-transparent to-farm-green/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            </div>
+        <Link to={'/shop/' + product.slug} className="block min-w-0">
+          <div className="relative aspect-square overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl border border-gold/15 bg-cream p-1.5 sm:p-2 md:p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gold/30 hover:shadow-md hover:shadow-gold/15">
+            <ProductImage
+              blendBlack={false}
+              src={product.image_url}
+              alt={product.name}
+              className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            />
           </div>
         </Link>
       </motion.div>
@@ -98,20 +103,17 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="group h-full"
+      className="group h-full min-w-0"
     >
-      <div className="relative h-full flex flex-col overflow-hidden rounded-2xl border border-gold/20 bg-gradient-to-b from-white to-cream/60 shadow-[0_4px_24px_-4px_rgba(62,43,31,0.12)] transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/40 hover:shadow-[0_16px_40px_-8px_rgba(200,167,106,0.35)]">
-        <Link to={'/shop/' + product.slug} className="block shrink-0">
-          <div className="relative aspect-square overflow-hidden bg-cream p-2 pb-0">
-            <div className="relative h-full w-full overflow-hidden rounded-t-xl rounded-b-md">
-              <img
-                src={product.image_url}
-                alt={product.name}
-                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-dark-brown/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gold/10 via-transparent to-farm-green/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            </div>
+      <div className="relative h-full flex flex-col overflow-hidden rounded-lg md:rounded-2xl border border-gold/20 bg-gradient-to-b from-white to-cream/60 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gold/35 hover:shadow-md hover:shadow-gold/15">
+        <Link to={'/shop/' + product.slug} className="block shrink-0 min-w-0">
+          <div className="relative aspect-square overflow-hidden bg-cream p-2 pb-1 md:p-4 md:pb-2">
+            <ProductImage
+              blendBlack={false}
+              src={product.image_url}
+              alt={product.name}
+              className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            />
           </div>
         </Link>
 
@@ -120,31 +122,32 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
           onClick={handleWishlistToggle}
           aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
           className={
-            'absolute top-5 right-5 z-10 rounded-full p-2.5 backdrop-blur-md transition-all duration-300 ' +
+            'absolute top-2 right-2 md:top-5 md:right-5 z-10 rounded-full p-1.5 md:p-2.5 backdrop-blur-md transition-all duration-300 ' +
             (isWishlisted
               ? 'bg-gold text-dark-brown shadow-md shadow-gold/30 scale-105'
               : 'bg-white/90 text-medium-brown shadow-sm hover:scale-110 hover:bg-gold hover:text-dark-brown hover:shadow-md hover:shadow-gold/25')
           }
         >
-          <Heart className={'h-4 w-4 transition-transform duration-300 ' + (isWishlisted ? 'fill-current' : 'group-hover:scale-110')} />
+          <Heart className={'h-3 w-3 md:h-4 md:w-4 transition-transform duration-300 ' + (isWishlisted ? 'fill-current' : 'group-hover:scale-110')} />
         </button>
 
         {product.featured && (
-          <span className="absolute top-5 left-5 z-10 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-gold to-gold-dark px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-dark-brown shadow-md shadow-gold/25">
-            <Sparkles className="h-3 w-3" />
-            Bestseller
+          <span className="absolute top-2 left-2 md:top-5 md:left-5 z-10 inline-flex items-center gap-0.5 md:gap-1 rounded-full bg-gradient-to-r from-gold to-gold-dark px-1.5 py-0.5 md:px-3 md:py-1 text-[9px] md:text-[11px] font-semibold uppercase tracking-wider text-dark-brown shadow-md shadow-gold/25">
+            <Sparkles className="h-2.5 w-2.5 md:h-3 md:w-3" />
+            <span className="hidden sm:inline">Bestseller</span>
+            <span className="sm:hidden">Best</span>
           </span>
         )}
 
-        <div className="flex flex-1 flex-col p-4 pt-3">
-          <div className="mb-2 flex min-h-[40px] flex-wrap content-start gap-1.5">
+        <div className="flex flex-1 flex-col p-2 pt-1.5 md:p-4 md:pt-3 min-w-0">
+          <div className="mb-1 md:mb-2 flex min-h-[28px] md:min-h-[40px] flex-wrap content-start gap-1 md:gap-1.5">
             {product.product_variants.map((variant) => (
               <button
                 key={variant.id}
                 type="button"
                 onClick={() => setSelectedSize(variant.size)}
                 className={
-                  'rounded-full border px-3.5 py-1.5 text-xs font-medium tracking-wide transition-all duration-200 ' +
+                  'rounded-full border px-2 py-0.5 md:px-3.5 md:py-1.5 text-[10px] md:text-xs font-medium tracking-wide transition-all duration-200 ' +
                   (selectedSize === variant.size
                     ? 'border-gold bg-gold/15 text-dark-brown shadow-sm ring-1 ring-gold/50'
                     : 'border-medium-brown/25 bg-white/70 text-medium-brown hover:border-gold/50 hover:bg-cream hover:text-dark-brown')
@@ -155,23 +158,23 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
             ))}
           </div>
 
-          <Link to={'/shop/' + product.slug}>
-            <h3 className="mb-1.5 font-serif text-xl font-semibold leading-snug text-dark-brown transition-colors duration-200 group-hover:text-gold">
+          <Link to={'/shop/' + product.slug} className="min-w-0">
+            <h3 className="mb-1 md:mb-1.5 font-serif text-sm md:text-xl font-semibold leading-snug text-dark-brown transition-colors duration-200 group-hover:text-gold line-clamp-2">
               {product.name}
             </h3>
           </Link>
-          <StarRating rating={5} size="sm" className="mb-1.5" />
-          <p className="mb-2 line-clamp-2 min-h-[2.25rem] text-sm leading-snug text-medium-brown/90">
+          <StarRating rating={5} size="sm" className="mb-1 md:mb-1.5 scale-90 md:scale-100 origin-left" />
+          <p className="mb-1.5 md:mb-2 line-clamp-2 min-h-[2rem] md:min-h-[2.25rem] text-xs md:text-sm leading-snug text-medium-brown/90">
             {product.short_description}
           </p>
 
-          <div className={'mt-auto flex items-end gap-3 border-t border-gold/15 pt-3 ' + (hidePrice ? 'justify-end' : 'justify-between')}>
+          <div className={'mt-auto flex items-end gap-1.5 md:gap-3 border-t border-gold/15 pt-2 md:pt-3 min-w-0 ' + (hidePrice ? 'justify-end' : 'justify-between')}>
             {!hidePrice && (
-              <div>
-                <span className="font-serif text-2xl font-bold tracking-tight text-dark-brown">
+              <div className="min-w-0 shrink">
+                <span className="font-serif text-base md:text-2xl font-bold tracking-tight text-dark-brown">
                   {formatPrice(displayPrice)}
                 </span>
-                <span className="block min-h-4 text-[11px] font-medium uppercase tracking-wide text-medium-brown/80">
+                <span className="block min-h-3 md:min-h-4 text-[9px] md:text-[11px] font-medium uppercase tracking-wide text-medium-brown/80 truncate">
                   {gstLabel || '\u00A0'}
                 </span>
               </div>
@@ -180,9 +183,9 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
               variant="gold"
               size="sm"
               onClick={handleAddToCart}
-              className="rounded-full px-4 shadow-md shadow-gold/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gold/40"
+              className="shrink-0 rounded-full px-2 py-1 md:px-4 md:py-1.5 text-xs md:text-sm shadow-md shadow-gold/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gold/40"
             >
-              <ShoppingCart className="mr-1.5 h-4 w-4" />
+              <ShoppingCart className="mr-0.5 md:mr-1.5 h-3 w-3 md:h-4 md:w-4" />
               <span className="font-semibold">Add</span>
             </Button>
           </div>

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import ScrollToTop from './components/layout/ScrollToTop';
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
 import ProductDetailPage from './pages/ProductDetailPage';
@@ -22,9 +23,9 @@ import AdminApp from './admin/AdminApp';
 
 function StorefrontLayout() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen w-full min-w-0 max-lg:overflow-x-clip">
       <Header />
-      <main className="flex-grow">
+      <main className="flex-grow w-full min-w-0">
         <Outlet />
       </main>
       <Footer />
@@ -35,6 +36,7 @@ function StorefrontLayout() {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/admin/*" element={<AdminApp />} />
         <Route element={<StorefrontLayout />}>

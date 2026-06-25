@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, Minus, Plus, Heart, Truck, Shield, RotateCcw } from 'lucide-react';
@@ -8,8 +8,14 @@ import { getAverageRating, getReviewCount } from '../lib/ratings';
 import { getProductBySlug } from '../lib/supabase';
 import { getDisplayPrice, getGstLabel } from '../lib/gst';
 import { formatPrice } from '../lib/utils';
+import {
+  formatBottleLabel,
+  getProductDetailImages,
+  getVariantImageUrl,
+} from '../lib/variants';
 import { useCartStore } from '../store/cart';
 import type { Product, ProductVariant, Review } from '../types';
+import ProductImage from '../components/product/ProductImage';
 
 export default function ProductDetailPage() {
   const { slug } = useParams();
@@ -45,6 +51,33 @@ export default function ProductDetailPage() {
   const gstRate = product?.gst_rate ?? 5;
   const displayPrice = getDisplayPrice(selectedVariant?.price || 0, applyGst, gstRate);
   const gstLabel = getGstLabel(applyGst, gstRate);
+  const lineTotal = displayPrice * quantity;
+  const bottleLabel = selectedVariant
+    ? formatBottleLabel(quantity, selectedVariant.size)
+    : '';
+
+  const images = useMemo(
+    () =>
+      product
+        ? getProductDetailImages(product, product.product_variants)
+        : [],
+    [product]
+  );
+
+  useEffect(() => {
+    if (!product || !selectedVariant) return;
+    const variantImage = getVariantImageUrl(selectedVariant, product);
+    const index = images.indexOf(variantImage);
+    setSelectedImageIndex(index >= 0 ? index : 0);
+  }, [selectedSize, product, selectedVariant, images]);
+
+  const handleQuantityChange = (nextQuantity: number) => {
+    setQuantity(Math.max(1, nextQuantity));
+  };
+
+  const handleSizeChange = (size: string) => {
+    setSelectedSize(size);
+  };
 
   const handleAddToCart = () => {
     if (!product || !selectedVariant) return;
@@ -56,7 +89,14 @@ export default function ProductDetailPage() {
       size: selectedVariant.size,
       price: displayPrice,
       quantity,
-      image_url: product.image_url,
+      image_url: getVariantImageUrl(selectedVariant, product),
+      product_variants: product.product_variants.map((v) => ({
+        id: v.id,
+        size: v.size,
+        price: v.price,
+      })),
+      apply_gst: applyGst,
+      gst_rate: gstRate,
     });
   };
 
@@ -86,7 +126,6 @@ export default function ProductDetailPage() {
   const averageRating = getAverageRating(product.reviews);
   const reviewCount = getReviewCount(product.reviews);
 
-  const images = [...new Set([product.image_url, ...(product.gallery_urls || [])].filter(Boolean))];
   const selectedImage = images[selectedImageIndex] || images[0] || '';
 
   return (
@@ -97,11 +136,11 @@ export default function ProductDetailPage() {
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <div className="aspect-square rounded-2xl overflow-hidden shadow-xl border border-gold/20">
-              <img
+            <div className="aspect-square rounded-2xl overflow-hidden shadow-xl border border-gold/20 bg-cream p-4 sm:p-6">
+              <ProductImage
                 src={selectedImage}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
             </div>
             {images.length > 1 && (
@@ -112,16 +151,16 @@ export default function ProductDetailPage() {
                     type="button"
                     onClick={() => setSelectedImageIndex(index)}
                     className={
-                      'flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ' +
+                      'flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 bg-cream p-1.5 transition-all ' +
                       (selectedImageIndex === index
                         ? 'border-gold shadow-md ring-2 ring-gold/30'
                         : 'border-medium-brown/20 hover:border-gold/60 opacity-80 hover:opacity-100')
                     }
                   >
-                    <img
+                    <ProductImage
                       src={url}
                       alt={`${product.name} view ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full"
                     />
                   </button>
                 ))}
@@ -158,7 +197,7 @@ export default function ProductDetailPage() {
                 {product.product_variants.map((variant) => (
                   <button
                     key={variant.id}
-                    onClick={() => setSelectedSize(variant.size)}
+                    onClick={() => handleSizeChange(variant.size)}
                     className={'px-4 py-2 rounded-lg border-2 font-medium transition-all ' + (
                       selectedSize === variant.size
                         ? 'border-gold bg-gold/10 text-dark-brown'
@@ -175,26 +214,34 @@ export default function ProductDetailPage() {
               <span className="text-sm font-medium text-dark-brown">Quantity:</span>
               <div className="flex items-center space-x-3 mt-2">
                 <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  onClick={() => handleQuantityChange(quantity - 1)}
                   className="p-2 rounded-lg border border-medium-brown/30 hover:border-gold transition-colors"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
                 <span className="text-lg font-semibold w-8 text-center">{quantity}</span>
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
+                  onClick={() => handleQuantityChange(quantity + 1)}
                   className="p-2 rounded-lg border border-medium-brown/30 hover:border-gold transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
+              {bottleLabel && (
+                <p className="text-sm text-medium-brown mt-2">{bottleLabel}</p>
+              )}
             </div>
 
             <div className="flex items-center justify-between mb-6">
               <div>
                 <span className="font-serif text-3xl font-bold text-gold">
-                  {formatPrice(displayPrice)}
+                  {formatPrice(lineTotal)}
                 </span>
+                {quantity > 1 && (
+                  <span className="block text-sm text-medium-brown mt-1">
+                    {formatPrice(displayPrice)} per bottle
+                  </span>
+                )}
                 {gstLabel && (
                   <span className="block text-sm text-medium-brown mt-1">{gstLabel}</span>
                 )}

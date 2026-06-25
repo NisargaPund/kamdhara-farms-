@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { SITE_LOGO } from '../../lib/imagePaths';
 
 const InstagramIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -28,15 +29,19 @@ const YoutubeIcon = () => (
 export default function Footer() {
   return (
     <footer className="bg-dark-brown text-cream">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
           <div>
-            <h3 className="font-serif text-2xl font-bold mb-4">Kamdhara Farms</h3>
-            <p className="text-cream/80 mb-4">
+            <img
+              src={SITE_LOGO}
+              alt="Kamdhara Farms"
+              className="h-10 md:h-12 w-auto object-contain mb-3 md:mb-4"
+            />
+            <p className="text-cream/80 text-sm md:text-base mb-3 md:mb-4">
               Bringing the purest A2 Gir Cow Ghee from our farm to your home.
               Tradition in Every Spoon.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-3 md:space-x-4">
               <a href="#" className="text-cream/80 hover:text-gold transition-colors">
                 <InstagramIcon />
               </a>
@@ -53,8 +58,8 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-lg mb-4">Quick Links</h4>
-            <ul className="space-y-2">
+            <h4 className="font-semibold text-base md:text-lg mb-3 md:mb-4">Quick Links</h4>
+            <ul className="space-y-1.5 md:space-y-2 text-sm md:text-base">
               <li><Link to="/shop" className="text-cream/80 hover:text-gold transition-colors">Shop</Link></li>
               <li><Link to="/about" className="text-cream/80 hover:text-gold transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="text-cream/80 hover:text-gold transition-colors">Contact</Link></li>
@@ -63,8 +68,8 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-lg mb-4">Policies</h4>
-            <ul className="space-y-2">
+            <h4 className="font-semibold text-base md:text-lg mb-3 md:mb-4">Policies</h4>
+            <ul className="space-y-1.5 md:space-y-2 text-sm md:text-base">
               <li><Link to="/privacy-policy" className="text-cream/80 hover:text-gold transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms-of-service" className="text-cream/80 hover:text-gold transition-colors">Terms of Service</Link></li>
               <li><Link to="/shipping-policy" className="text-cream/80 hover:text-gold transition-colors">Shipping Policy</Link></li>
@@ -73,17 +78,17 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-lg mb-4">Contact Us</h4>
-            <ul className="space-y-3">
+            <h4 className="font-semibold text-base md:text-lg mb-3 md:mb-4">Contact Us</h4>
+            <ul className="space-y-2 md:space-y-3 text-sm md:text-base">
               <li className="flex items-center space-x-2 text-cream/80">
                 <Phone className="w-4 h-4" />
                 <a href="tel:+918766703485" className="hover:text-gold transition-colors">
                   +91 87667 03485
                 </a>
               </li>
-              <li className="flex items-center space-x-2 text-cream/80">
-                <Mail className="w-4 h-4" />
-                <a href="mailto:support@kamdharafarms.com" className="hover:text-gold transition-colors">
+              <li className="flex items-start space-x-2 text-cream/80 min-w-0">
+                <Mail className="w-4 h-4 shrink-0 mt-0.5" />
+                <a href="mailto:support@kamdharafarms.com" className="hover:text-gold transition-colors break-all min-w-0">
                   support@kamdharafarms.com
                 </a>
               </li>
@@ -95,7 +100,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-cream/20 mt-12 pt-8 text-center text-cream/60">
+        <div className="border-t border-cream/20 mt-8 md:mt-12 pt-6 md:pt-8 text-center text-cream/60 text-xs md:text-base">
           <p>&copy; 2024 Kamdhara Farms. All rights reserved.</p>
         </div>
       </div>

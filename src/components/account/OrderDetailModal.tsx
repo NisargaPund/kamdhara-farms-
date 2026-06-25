@@ -1,6 +1,7 @@
 import { X, Package, MapPin, CreditCard, Truck } from 'lucide-react';
 import type { Order } from '../../types';
 import { formatPrice } from '../../lib/utils';
+import { formatBottleLabel } from '../../lib/variants';
 import { formatOrderStatus, statusBadgeColors } from '../../lib/orderStatus';
 import OrderStatusStepper from './OrderStatusStepper';
 import Button from '../ui/Button';
@@ -85,7 +86,7 @@ export default function OrderDetailModal({ order, onClose }: OrderDetailModalPro
                 <div>
                   <p className="text-dark-brown font-medium">{item.product_name}</p>
                   <p className="text-sm text-medium-brown">
-                    {item.size} × {item.quantity}
+                    {formatBottleLabel(item.quantity, item.size)}
                   </p>
                 </div>
                 <span className="font-medium text-dark-brown">{formatPrice(item.total)}</span>

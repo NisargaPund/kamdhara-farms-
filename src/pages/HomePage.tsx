@@ -28,7 +28,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div>
+    <div className="w-full min-w-0">
       <HeroSection />
       {loading ? (
         <div className="py-20 text-center">

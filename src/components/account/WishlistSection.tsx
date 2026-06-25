@@ -4,6 +4,7 @@ import { Heart, Trash2 } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { useWishlistStore } from '../../lib/wishlist';
 import { formatPrice } from '../../lib/utils';
+import ProductImage from '../product/ProductImage';
 import Button from '../ui/Button';
 
 export default function WishlistSection() {
@@ -40,11 +41,13 @@ export default function WishlistSection() {
           {items.map((item) => (
             <div key={item.id} className="bg-white rounded-xl shadow-sm overflow-hidden flex">
               <Link to={`/shop/${item.product_slug}`} className="shrink-0">
-                <img
-                  src={item.image_url}
-                  alt={item.product_name}
-                  className="w-24 h-24 object-cover"
-                />
+                <div className="w-24 h-24 bg-cream p-1.5">
+                  <ProductImage
+                    src={item.image_url}
+                    alt={item.product_name}
+                    className="w-full h-full"
+                  />
+                </div>
               </Link>
               <div className="p-4 flex-1 flex flex-col justify-between">
                 <div>
