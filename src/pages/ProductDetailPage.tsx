@@ -138,7 +138,9 @@ export default function ProductDetailPage() {
           >
             <div className="aspect-square rounded-2xl overflow-hidden shadow-xl border border-gold/20 bg-cream p-4 sm:p-6">
               <ProductImage
+                key={selectedImage}
                 src={selectedImage}
+                fallbackSrc={product.image_url}
                 alt={product.name}
                 className="w-full h-full"
               />
@@ -159,6 +161,7 @@ export default function ProductDetailPage() {
                   >
                     <ProductImage
                       src={url}
+                      fallbackSrc={product.image_url}
                       alt={`${product.name} view ${index + 1}`}
                       className="w-full h-full"
                     />

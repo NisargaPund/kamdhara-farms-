@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../lib/auth';
+import { formatAuthError } from '../lib/supabase';
 import Button from '../components/ui/Button';
 import toast from 'react-hot-toast';
 
@@ -28,13 +29,18 @@ export default function LoginPage() {
         toast.success('Welcome back!');
         navigate(from, { replace: true });
       } else {
-        const { error } = await signUp(email, password, name);
+        const { error, session } = await signUp(email, password, name);
         if (error) throw error;
-        toast.success('Account created! Please check your email to verify.');
-        setIsLogin(true);
+        if (session) {
+          toast.success('Welcome to Kamdhara Farms!');
+          navigate(from, { replace: true });
+        } else {
+          toast.success('Account created! Check your email to verify, then sign in.');
+          setIsLogin(true);
+        }
       }
-    } catch (error: any) {
-      toast.error(error.message || 'Authentication failed');
+    } catch (error: unknown) {
+      toast.error(formatAuthError(error));
     } finally {
       setLoading(false);
     }

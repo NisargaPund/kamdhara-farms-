@@ -10,6 +10,7 @@ import { useCartStore } from '../../store/cart';
 import { useAuth } from '../../lib/auth';
 import { useWishlistStore } from '../../lib/wishlist';
 import toast from 'react-hot-toast';
+import { getVariantImageUrl } from '../../lib/variants';
 import type { Product, ProductVariant } from '../../types';
 import ProductImage from './ProductImage';
 
@@ -28,6 +29,7 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
 
   const isWishlisted = isInWishlist(product.id);
   const selectedVariant = product.product_variants.find(v => v.size === selectedSize) || product.product_variants[0];
+  const displayImageUrl = getVariantImageUrl(selectedVariant ?? {}, product);
   const applyGst = product.apply_gst ?? false;
   const gstRate = product.gst_rate ?? 5;
   const displayPrice = getDisplayPrice(selectedVariant?.price || 0, applyGst, gstRate);
@@ -43,7 +45,7 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
       size: selectedVariant.size,
       price: displayPrice,
       quantity: 1,
-      image_url: product.image_url,
+      image_url: displayImageUrl,
       product_variants: product.product_variants.map((v) => ({
         id: v.id,
         size: v.size,
@@ -69,7 +71,7 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
         product_id: product.id,
         product_name: product.name,
         product_slug: product.slug,
-        image_url: product.image_url,
+        image_url: displayImageUrl,
         price: selectedVariant?.price || 0,
       });
       toast.success('Added to wishlist!');
@@ -87,8 +89,10 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
         <Link to={'/shop/' + product.slug} className="block min-w-0">
           <div className="relative aspect-square overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl border border-gold/15 bg-cream p-1.5 sm:p-2 md:p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gold/30 hover:shadow-md hover:shadow-gold/15">
             <ProductImage
+              key={displayImageUrl}
               blendBlack={false}
-              src={product.image_url}
+              src={displayImageUrl}
+              fallbackSrc={product.image_url}
               alt={product.name}
               className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]"
             />
@@ -109,8 +113,10 @@ export default function ProductCard({ product, hidePrice = false, imageOnly = fa
         <Link to={'/shop/' + product.slug} className="block shrink-0 min-w-0">
           <div className="relative aspect-square overflow-hidden bg-cream p-2 pb-1 md:p-4 md:pb-2">
             <ProductImage
+              key={displayImageUrl}
               blendBlack={false}
-              src={product.image_url}
+              src={displayImageUrl}
+              fallbackSrc={product.image_url}
               alt={product.name}
               className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]"
             />

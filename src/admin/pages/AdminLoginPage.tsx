@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Leaf, Shield } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { checkIsAdmin } from '../../lib/admin';
-import { supabase } from '../../lib/supabase';
+import { supabase, formatAuthError } from '../../lib/supabase';
 import Button from '../../components/ui/Button';
 import toast from 'react-hot-toast';
 
@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
       toast.success('Welcome to Admin Panel');
       navigate(from, { replace: true });
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Login failed';
+      const message = formatAuthError(error);
       toast.error(message);
     } finally {
       setLoading(false);

@@ -131,7 +131,13 @@ BEGIN
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'full_name', '')
   )
-  ON CONFLICT (id) DO NOTHING;
+  ON CONFLICT (id) DO UPDATE SET
+    email = EXCLUDED.email,
+    full_name = CASE
+      WHEN profiles.full_name IS NULL OR profiles.full_name = ''
+      THEN EXCLUDED.full_name
+      ELSE profiles.full_name
+    END;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;

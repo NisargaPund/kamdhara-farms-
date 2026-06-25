@@ -52,11 +52,32 @@ export default function AccountPage() {
     (async () => {
       setLoading(true);
       try {
-        const { data } = await supabase
+        let data: {
+          full_name?: string | null;
+          phone?: string | null;
+          email_notifications?: boolean | null;
+          whatsapp_notifications?: boolean | null;
+        } | null = null;
+
+        const profileRes = await supabase
           .from('profiles')
           .select('full_name, phone, email_notifications, whatsapp_notifications')
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
+
+        if (profileRes.error?.code === '42703' || profileRes.error?.code === 'PGRST204') {
+          const fallback = await supabase
+            .from('profiles')
+            .select('full_name, phone')
+            .eq('id', user.id)
+            .maybeSingle();
+          if (fallback.error) throw fallback.error;
+          data = fallback.data;
+        } else if (profileRes.error) {
+          throw profileRes.error;
+        } else {
+          data = profileRes.data;
+        }
 
         if (cancelled) return;
 

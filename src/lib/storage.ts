@@ -75,6 +75,19 @@ export async function uploadProductImage(file: File): Promise<string> {
     throw new Error(formatStorageUploadError(error));
   }
 
-  const { data } = supabase.storage.from(PRODUCT_IMAGES_BUCKET).getPublicUrl(filePath);
+  return resolveProductImageUrl(filePath);
+}
+
+/** Normalize admin-stored values to a public storage URL (full URL or bare object path). */
+export function resolveProductImageUrl(url?: string | null): string {
+  const trimmed = url?.trim();
+  if (!trimmed) return '';
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  const path = trimmed.replace(/^\/+/, '').replace(/^product-images\//, '');
+  const { data } = supabase.storage.from(PRODUCT_IMAGES_BUCKET).getPublicUrl(path);
   return data.publicUrl;
 }

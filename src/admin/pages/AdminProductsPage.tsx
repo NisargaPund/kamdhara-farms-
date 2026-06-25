@@ -200,7 +200,7 @@ export default function AdminProductsPage() {
     try {
       const url = await uploadProductImage(file);
       setForm((f) => ({ ...f, image_url: url }));
-      toast.success('Image uploaded');
+      toast.success('Image uploaded — click Save Product to publish on the website');
     } catch (error) {
       const message = formatStorageUploadError(error);
       toast.error(message);
@@ -280,7 +280,7 @@ export default function AdminProductsPage() {
     try {
       const url = await uploadProductImage(file);
       updateVariant(index, 'image_url', url);
-      toast.success('Variant image uploaded');
+      toast.success('Variant image uploaded — click Save Product to publish on the website');
     } catch (error) {
       const message = formatStorageUploadError(error);
       toast.error(message);

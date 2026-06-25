@@ -7,6 +7,17 @@ interface ProductsSectionProps {
 }
 
 export default function ProductsSection({ products }: ProductsSectionProps) {
+  const displayProducts = (() => {
+    const featured = products.filter((p) => p.featured);
+    const pool = featured.length > 0 ? featured : products;
+    return [...pool]
+      .sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )
+      .slice(0, 3);
+  })();
+
   return (
     <section className="py-12 md:py-20 bg-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -27,11 +38,17 @@ export default function ProductsSection({ products }: ProductsSectionProps) {
         </motion.div>
 
         <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-8 items-stretch">
-          {products.slice(0, 3).map((product) => (
-            <div key={product.id} className="min-w-0">
-              <ProductCard product={product} imageOnly />
-            </div>
-          ))}
+          {displayProducts.length === 0 ? (
+            <p className="col-span-full text-center text-medium-brown py-8">
+              Products could not be loaded. Check Netlify env vars (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) and redeploy.
+            </p>
+          ) : (
+            displayProducts.map((product) => (
+              <div key={product.id} className="min-w-0">
+                <ProductCard product={product} imageOnly />
+              </div>
+            ))
+          )}
         </div>
       </div>
     </section>
