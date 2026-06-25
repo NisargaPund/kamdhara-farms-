@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Placeholder: ghee packaging">
+  <rect width="800" height="600" fill="#F5EFE4"/>
+  <rect x="220" y="180" width="120" height="260" rx="12" fill="#C8A76A" opacity="0.4" stroke="#8B6A4E" stroke-width="3"/>
+  <rect x="340" y="160" width="120" height="280" rx="12" fill="#C8A76A" opacity="0.55" stroke="#8B6A4E" stroke-width="3"/>
+  <rect x="460" y="190" width="120" height="250" rx="12" fill="#C8A76A" opacity="0.45" stroke="#8B6A4E" stroke-width="3"/>
+  <rect x="245" y="210" width="70" height="90" rx="6" fill="#F5EFE4" opacity="0.7"/>
+  <rect x="365" y="190" width="70" height="90" rx="6" fill="#F5EFE4" opacity="0.7"/>
+  <rect x="485" y="220" width="70" height="90" rx="6" fill="#F5EFE4" opacity="0.7"/>
+  <text x="400" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="36" fill="#3E2B1F" font-weight="bold">Step 7</text>
+  <text x="400" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#C8A76A">Careful Packaging</text>
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#8B6A4E">Replace with farm photo</text>
+</svg>

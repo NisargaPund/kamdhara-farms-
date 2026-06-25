@@ -103,6 +103,17 @@ Deno.serve(async (req) => {
 
     if (updateError) throw updateError;
 
+    // Notify customer of confirmed online payment
+    const notifyUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/send-order-notification`;
+    fetch(notifyUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ orderId: storeOrderId, type: 'order_placed' }),
+    }).catch((err) => console.warn('Notification trigger failed:', err));
+
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

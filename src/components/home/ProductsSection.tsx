@@ -21,13 +21,14 @@ export default function ProductsSection({ products }: ProductsSectionProps) {
             Premium Ghee Selection
           </h2>
           <p className="text-medium-brown max-w-2xl mx-auto">
-            Handcrafted with love using the traditional bilona method from the milk of our heritage Gir cows.
+            From pure desi cow ghee to rich buffalo bilona ghee — each jar is
+            handcrafted with the same traditional bilona method and uncompromising quality.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           {products.slice(0, 3).map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} imageOnly />
           ))}
         </div>
       </div>

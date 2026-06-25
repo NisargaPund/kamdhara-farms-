@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import HeroSection from '../components/home/HeroSection';
 import ProductsSection from '../components/home/ProductsSection';
 import BenefitsSection from '../components/home/BenefitsSection';
+import ProcessSection from '../components/home/ProcessSection';
 import StorySection from '../components/home/StorySection';
 import TestimonialsSection from '../components/home/TestimonialsSection';
 import FAQSection from '../components/home/FAQSection';
@@ -37,6 +38,7 @@ export default function HomePage() {
         <ProductsSection products={products} />
       )}
       <BenefitsSection />
+      <ProcessSection />
       <StorySection />
       <TestimonialsSection />
       <FAQSection />

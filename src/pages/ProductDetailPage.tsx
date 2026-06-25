@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, Minus, Plus, Heart, Truck, Shield, RotateCcw } from 'lucide-react';
 import Button from '../components/ui/Button';
+import StarRating from '../components/ui/StarRating';
+import { getAverageRating, getReviewCount } from '../lib/ratings';
 import { getProductBySlug } from '../lib/supabase';
 import { getDisplayPrice, getGstLabel } from '../lib/gst';
 import { formatPrice } from '../lib/utils';
@@ -81,9 +83,8 @@ export default function ProductDetailPage() {
     );
   }
 
-  const averageRating = product.reviews?.length > 0
-    ? product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length
-    : 0;
+  const averageRating = getAverageRating(product.reviews);
+  const reviewCount = getReviewCount(product.reviews);
 
   const images = [...new Set([product.image_url, ...(product.gallery_urls || [])].filter(Boolean))];
   const selectedImage = images[selectedImageIndex] || images[0] || '';
@@ -143,23 +144,11 @@ export default function ProductDetailPage() {
 
             <h1 className="font-serif text-4xl font-bold text-dark-brown mb-4">{product.name}</h1>
 
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={'w-5 h-5 ' + (
-                      i < Math.floor(averageRating)
-                        ? 'text-gold fill-gold'
-                        : 'text-gray-300'
-                    )}
-                  />
-                ))}
-              </div>
-              <span className="text-sm text-medium-brown">
-                ({product.reviews?.length || 0} reviews)
-              </span>
-            </div>
+            <StarRating
+              rating={averageRating}
+              reviewCount={reviewCount > 0 ? reviewCount : undefined}
+              className="mb-4"
+            />
 
             <p className="text-medium-brown mb-6">{product.description}</p>
 

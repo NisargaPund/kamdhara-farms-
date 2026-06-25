@@ -68,7 +68,7 @@ async function parseFunctionError(error: unknown): Promise<string> {
     return message;
   }
 
-  return 'Payment failed. Please try again or use Cash on Delivery.';
+  return 'Payment failed. Please try again.';
 }
 
 function loadRazorpayScript(): Promise<boolean> {

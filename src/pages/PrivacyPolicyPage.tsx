@@ -13,17 +13,27 @@ export default function PrivacyPolicyPage() {
           </h1>
 
           <div className="bg-white rounded-xl shadow-sm p-8 space-y-6">
-            <p className="text-medium-brown">Last updated: January 2024</p>
+            <p className="text-medium-brown">Last updated: June 24, 2025</p>
+
+            <section>
+              <p className="text-medium-brown leading-relaxed">
+                Kamdhara Farms respects your privacy.
+              </p>
+            </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
                 Information We Collect
               </h2>
-              <p className="text-medium-brown leading-relaxed">
-                We collect information you provide directly to us, such as when you create an account,
-                place an order, or contact us for support. This may include your name, email address,
-                phone number, shipping address, and payment information.
-              </p>
+              <p className="text-medium-brown leading-relaxed">We may collect:</p>
+              <ul className="text-medium-brown list-disc list-inside space-y-1 mt-2">
+                <li>Name</li>
+                <li>Mobile Number</li>
+                <li>Email Address</li>
+                <li>Billing Address</li>
+                <li>Shipping Address</li>
+                <li>Order Details</li>
+              </ul>
             </section>
 
             <section>
@@ -31,41 +41,58 @@ export default function PrivacyPolicyPage() {
                 How We Use Your Information
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                We use the information we collect to process orders, communicate with you about your
-                purchases, send you marketing communications (if you've opted in), and improve our
-                services. We do not sell your personal information to third parties.
+                Your information is used only for:
+              </p>
+              <ul className="text-medium-brown list-disc list-inside space-y-1 mt-2">
+                <li>Processing orders</li>
+                <li>Shipping products</li>
+                <li>Customer support</li>
+                <li>Order updates</li>
+                <li>Legal compliance</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
+                Data Protection
+              </h2>
+              <p className="text-medium-brown leading-relaxed">
+                We do not sell, rent, or share customer information with third parties except as
+                required for payment processing, shipping, or legal obligations.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Data Security
+                Marketing Communication
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                We implement industry-standard security measures to protect your personal information.
-                All payment transactions are encrypted using SSL technology. Your data is stored
-                securely and access is restricted to authorized personnel only.
+                Customers may receive order updates and promotional communications. Customers may
+                unsubscribe at any time.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Your Rights
+                Security
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                You have the right to access, correct, or delete your personal information. You may
-                also opt out of marketing communications at any time. To exercise these rights,
-                please contact us at hello@kamdhara.com.
+                We use commercially reasonable measures to protect customer information.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Contact Us
+                Contact
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                If you have any questions about this Privacy Policy, please contact us at
-                hello@kamdhara.com or +91 98765 43210.
+                For privacy-related concerns:
+              </p>
+              <p className="text-medium-brown leading-relaxed mt-2">
+                Email: support@kamdharafarms.com
+              </p>
+              <p className="text-medium-brown leading-relaxed">
+                Phone: +91 87667 03485
               </p>
             </section>
           </div>

@@ -13,71 +13,70 @@ export default function TermsOfServicePage() {
           </h1>
 
           <div className="bg-white rounded-xl shadow-sm p-8 space-y-6">
-            <p className="text-medium-brown">Last updated: January 2024</p>
+            <p className="text-medium-brown leading-relaxed">
+              By using the Kamdhara Farms website and purchasing our products, you agree to
+              the following terms:
+            </p>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Acceptance of Terms
+                1. Product Acceptance
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                By accessing and using the Kamdhara Farms website, you accept and agree to be bound
-                by these Terms of Service. If you do not agree to these terms, please do not use
-                our services.
+                Acceptance of delivery confirms that the customer has received the product in
+                satisfactory condition.
+              </p>
+              <p className="text-medium-brown leading-relaxed mt-2">
+                No claims regarding physical damage, leakage, breakage, or missing items shall
+                be accepted after delivery acceptance.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Products and Pricing
+                2. Food Product Policy
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                All prices are listed in Indian Rupees (INR) and are inclusive of applicable taxes.
-                We reserve the right to modify prices without notice. Product images are for
-                illustration purposes; actual products may vary slightly in appearance.
+                Due to the consumable nature of our products:
+              </p>
+              <ul className="text-medium-brown list-disc list-inside space-y-1 mt-2">
+                <li>Opened jars are non-returnable.</li>
+                <li>Broken seals void return eligibility.</li>
+                <li>Consumed products cannot be refunded.</li>
+                <li>Personal taste preferences are not grounds for return.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
+                3. Product Variations
+              </h2>
+              <p className="text-medium-brown leading-relaxed">
+                As our products are made from natural ingredients, minor variations in colour,
+                aroma, texture, and consistency may occur.
+              </p>
+              <p className="text-medium-brown leading-relaxed mt-2">
+                Such variations shall not be considered defects.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Orders and Payment
+                4. Limitation of Liability
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                All orders are subject to acceptance and availability. We accept payments via
-                Credit/Debit cards, UPI, and Cash on Delivery. Payment information is processed
-                securely through trusted payment gateways.
+                Kamdhara Farms shall not be liable for indirect, incidental, or consequential
+                losses arising from product use.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Shipping and Delivery
+                5. Fraudulent Claims
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                We ship across India through trusted courier partners. Delivery times are estimates
-                and may vary. Risk of loss passes to you upon delivery to the carrier. We are not
-                responsible for delays caused by courier services.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Intellectual Property
-              </h2>
-              <p className="text-medium-brown leading-relaxed">
-                All content on this website, including text, images, logos, and design, is the
-                property of Kamdhara Farms and is protected by copyright laws. Unauthorized
-                use is prohibited.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Limitation of Liability
-              </h2>
-              <p className="text-medium-brown leading-relaxed">
-                Kamdhara Farms shall not be liable for any indirect, incidental, or consequential
-                damages arising from the use of our products or services. Our maximum liability
-                is limited to the purchase price of the product.
+                Kamdhara Farms reserves the right to reject any claim that appears fraudulent,
+                misleading, or unsupported by evidence.
               </p>
             </section>
           </div>

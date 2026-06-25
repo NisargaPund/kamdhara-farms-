@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Placeholder: ghee clarification over wood fire">
+  <rect width="800" height="600" fill="#2A1A10"/>
+  <rect x="0" y="420" width="800" height="180" fill="#3E2B1F"/>
+  <ellipse cx="400" cy="430" rx="120" ry="25" fill="#C8A76A" opacity="0.35"/>
+  <ellipse cx="400" cy="420" rx="80" ry="15" fill="#FF9933" opacity="0.5"/>
+  <path d="M360 420 Q370 360 380 420 M400 420 Q410 340 420 420 M440 420 Q450 370 460 420" fill="none" stroke="#FF9933" stroke-width="4" opacity="0.6"/>
+  <ellipse cx="400" cy="300" rx="100" ry="60" fill="#C8A76A" opacity="0.85"/>
+  <ellipse cx="400" cy="290" rx="70" ry="35" fill="#F5EFE4" opacity="0.3"/>
+  <text x="400" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="36" fill="#F5EFE4" font-weight="bold">Step 5</text>
+  <text x="400" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#C8A76A">Slow Clarification</text>
+  <text x="400" y="560" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#C8A76A" opacity="0.8">Replace with farm photo</text>
+</svg>

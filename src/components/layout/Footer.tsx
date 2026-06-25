@@ -77,15 +77,19 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center space-x-2 text-cream/80">
                 <Phone className="w-4 h-4" />
-                <span>+91 98765 43210</span>
+                <a href="tel:+918766703485" className="hover:text-gold transition-colors">
+                  +91 87667 03485
+                </a>
               </li>
               <li className="flex items-center space-x-2 text-cream/80">
                 <Mail className="w-4 h-4" />
-                <span>hello@kamdhara.com</span>
+                <a href="mailto:support@kamdharafarms.com" className="hover:text-gold transition-colors">
+                  support@kamdharafarms.com
+                </a>
               </li>
               <li className="flex items-start space-x-2 text-cream/80">
                 <MapPin className="w-4 h-4 mt-1" />
-                <span>Gir, Gujarat, India</span>
+                <span>Baramati, Maharashtra</span>
               </li>
             </ul>
           </div>

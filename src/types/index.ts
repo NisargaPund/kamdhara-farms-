@@ -51,9 +51,33 @@ export interface Order {
   billing_address?: Address;
   razorpay_order_id: string | null;
   razorpay_payment_id: string | null;
+  tracking_number: string | null;
+  estimated_delivery: string | null;
+  carrier: string | null;
   created_at: string;
   updated_at: string;
   order_items?: OrderItem[];
+}
+
+export interface SavedAddress {
+  id: string;
+  user_id: string;
+  label: string;
+  full_name: string;
+  phone: string;
+  address_line1: string;
+  address_line2: string;
+  city: string;
+  state: string;
+  pincode: string;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface NotificationPreferences {
+  email_notifications: boolean;
+  whatsapp_notifications: boolean;
 }
 
 export interface OrderItem {
@@ -74,6 +98,8 @@ export interface Profile {
   full_name: string;
   phone: string;
   is_admin: boolean;
+  email_notifications: boolean;
+  whatsapp_notifications: boolean;
   created_at: string;
 }
 
@@ -120,4 +146,32 @@ export interface Review {
   comment: string;
   created_at: string;
   user_name: string;
+}
+
+export interface OrderStatusHistoryEntry {
+  id: string;
+  order_id: string;
+  event_type: 'order_created' | 'status_change' | 'payment_change' | 'tracking_update' | string;
+  old_status: string | null;
+  new_status: string | null;
+  changed_by: string | null;
+  notes: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+}
+
+export interface OrderNotificationLog {
+  id: string;
+  order_id: string;
+  channel: 'email' | 'whatsapp' | string;
+  notification_type: 'order_placed' | 'status_update' | string;
+  status: 'sent' | 'failed' | 'skipped' | string;
+  details: string | null;
+  created_at: string;
+}
+
+export interface AdminOrderDetail {
+  history: OrderStatusHistoryEntry[];
+  notifications: OrderNotificationLog[];
+  customer: Profile | null;
 }

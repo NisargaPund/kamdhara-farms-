@@ -30,14 +30,14 @@ export default function ShopPage() {
     : products.filter(p => p.category === selectedCategory);
 
   return (
-    <div className="pt-24 pb-20 bg-cream min-h-screen">
+    <div className="pt-20 pb-10 bg-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-6"
         >
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-dark-brown mb-4">
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-dark-brown mb-2">
             Our Products
           </h1>
           <p className="text-medium-brown max-w-2xl mx-auto">
@@ -45,7 +45,7 @@ export default function ShopPage() {
           </p>
         </motion.div>
 
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        <div className="flex flex-wrap justify-center gap-3 mb-8">
           {categories.map((category) => (
             <button
               key={category}
@@ -66,7 +66,7 @@ export default function ShopPage() {
             <p className="text-medium-brown">Loading products...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

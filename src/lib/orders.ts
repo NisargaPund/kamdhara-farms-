@@ -1,10 +1,12 @@
-import { supabase } from './supabase';
+import { supabase, formatSupabaseError } from './supabase';
 import type { Address } from '../types';
 import type { CartItem } from '../types';
 
+export type OnlinePaymentMethod = 'upi' | 'card';
+
 interface CreateOrderParams {
   userId: string | null;
-  paymentMethod: string;
+  paymentMethod: OnlinePaymentMethod;
   subtotal: number;
   shipping: number;
   total: number;
@@ -26,7 +28,7 @@ export async function createStoreOrder({
     .insert({
       user_id: userId,
       status: 'pending',
-      payment_status: paymentMethod === 'cod' ? 'pending' : 'pending',
+      payment_status: 'pending',
       payment_method: paymentMethod,
       subtotal,
       shipping_cost: shipping,
@@ -36,7 +38,9 @@ export async function createStoreOrder({
     .select()
     .single();
 
-  if (orderError) throw orderError;
+  if (orderError) {
+    throw new Error(formatSupabaseError(orderError));
+  }
 
   const orderItems = items.map((item) => ({
     order_id: order.id,
@@ -50,9 +54,11 @@ export async function createStoreOrder({
   }));
 
   const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
-  if (itemsError) throw itemsError;
+  if (itemsError) {
+    throw new Error(formatSupabaseError(itemsError));
+  }
 
-  return order;
+  return { ...order, order_items: orderItems };
 }
 
 export async function markOrderPaymentFailed(orderId: string) {

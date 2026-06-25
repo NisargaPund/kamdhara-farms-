@@ -9,6 +9,8 @@ export default {
         "medium-brown": "#8B6A4E",
         gold: "#C8A76A",
         "gold-dark": "#A88B4A",
+        "farm-green": "#4A6741",
+        "farm-green-light": "#E8EFE6",
       },
       fontFamily: {
         serif: ["Cormorant Garamond", "Georgia", "serif"],

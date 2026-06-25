@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Placeholder: fresh milk collection">
+  <rect width="800" height="600" fill="#F5EFE4"/>
+  <rect x="280" y="180" width="240" height="320" rx="20" fill="#C8A76A" opacity="0.35"/>
+  <ellipse cx="400" cy="200" rx="130" ry="35" fill="#C8A76A" opacity="0.5"/>
+  <rect x="320" y="260" width="160" height="180" rx="12" fill="#F5EFE4" stroke="#8B6A4E" stroke-width="4"/>
+  <path d="M360 320 Q400 380 440 320" fill="none" stroke="#C8A76A" stroke-width="8" stroke-linecap="round"/>
+  <text x="400" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="36" fill="#3E2B1F" font-weight="bold">Step 2</text>
+  <text x="400" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#C8A76A">Fresh Milking</text>
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#8B6A4E">Replace with farm photo</text>
+</svg>

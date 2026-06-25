@@ -1,71 +1,100 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Package, MapPin, LogOut, Edit, Save } from 'lucide-react';
+import { User, LogOut } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
 import Button from '../components/ui/Button';
-import toast from 'react-hot-toast';
+import AccountSidebar, { type AccountTab } from '../components/account/AccountSidebar';
+import PersonalInfoSection from '../components/account/PersonalInfoSection';
+import SavedAddressesSection from '../components/account/SavedAddressesSection';
+import OrdersListSection from '../components/account/OrdersListSection';
+import WishlistSection from '../components/account/WishlistSection';
+import AccountSettingsSection from '../components/account/AccountSettingsSection';
+import type { NotificationPreferences } from '../types';
 
-interface Profile {
-  full_name: string;
-  phone: string;
+const VALID_TABS: AccountTab[] = [
+  'profile',
+  'addresses',
+  'current-orders',
+  'order-history',
+  'wishlist',
+  'settings',
+];
+
+function parseTab(value: string | null): AccountTab {
+  if (value && VALID_TABS.includes(value as AccountTab)) {
+    return value as AccountTab;
+  }
+  return 'profile';
 }
 
 export default function AccountPage() {
   const { user, signOut } = useAuth();
-  const [profile, setProfile] = useState<Profile>({ full_name: '', phone: '' });
-  const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = parseTab(searchParams.get('tab'));
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [preferences, setPreferences] = useState<NotificationPreferences>({
+    email_notifications: true,
+    whatsapp_notifications: true,
+  });
+  const [loading, setLoading] = useState(true);
+
+  const highlightOrder = searchParams.get('order');
 
   useEffect(() => {
-    if (user) {
-      fetchProfile();
-    }
+    if (!user) return;
+
+    let cancelled = false;
+
+    (async () => {
+      setLoading(true);
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('full_name, phone, email_notifications, whatsapp_notifications')
+          .eq('id', user.id)
+          .single();
+
+        if (cancelled) return;
+
+        if (data) {
+          setFullName(data.full_name || '');
+          setPhone(data.phone || '');
+          setPreferences({
+            email_notifications: data.email_notifications !== false,
+            whatsapp_notifications: data.whatsapp_notifications !== false,
+          });
+        } else {
+          const defaultName = user.user_metadata?.full_name || '';
+          await supabase.from('profiles').insert({
+            id: user.id,
+            email: user.email,
+            full_name: defaultName,
+          });
+          if (!cancelled) {
+            setFullName(defaultName);
+          }
+        }
+      } catch {
+        if (!cancelled) toast.error('Failed to load profile');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
-  const fetchProfile = async () => {
-    if (!user) return;
-    const { data } = await supabase
-      .from('profiles')
-      .select('full_name, phone')
-      .eq('id', user.id)
-      .single();
-
-    if (data) {
-      setProfile(data);
-    } else {
-      // Create profile if it doesn't exist
-      const fullName = user.user_metadata?.full_name || '';
-      await supabase.from('profiles').insert({
-        id: user.id,
-        email: user.email,
-        full_name: fullName,
-      });
-      setProfile({ full_name: fullName, phone: '' });
-    }
-  };
-
-  const handleSaveProfile = async () => {
-    if (!user) return;
-    setSaving(true);
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          full_name: profile.full_name,
-          phone: profile.phone,
-        })
-        .eq('id', user.id);
-
-      if (error) throw error;
-      toast.success('Profile updated!');
-      setEditing(false);
-    } catch (error) {
-      toast.error('Failed to update profile');
-    } finally {
-      setSaving(false);
-    }
+  const handleTabChange = (tab: AccountTab) => {
+    const next = new URLSearchParams(searchParams);
+    next.set('tab', tab);
+    if (tab !== 'current-orders') next.delete('order');
+    setSearchParams(next, { replace: true });
   };
 
   const handleSignOut = async () => {
@@ -78,12 +107,8 @@ export default function AccountPage() {
       <div className="pt-24 pb-20 bg-cream min-h-screen">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <User className="w-16 h-16 mx-auto text-medium-brown mb-4" />
-          <h1 className="font-serif text-3xl font-bold text-dark-brown mb-4">
-            My Account
-          </h1>
-          <p className="text-medium-brown mb-8">
-            Please sign in to access your account.
-          </p>
+          <h1 className="font-serif text-3xl font-bold text-dark-brown mb-4">My Account</h1>
+          <p className="text-medium-brown mb-8">Please sign in to access your account.</p>
           <Link to="/login">
             <Button variant="gold">Sign In</Button>
           </Link>
@@ -92,97 +117,74 @@ export default function AccountPage() {
     );
   }
 
+  const renderSection = () => {
+    if (loading) {
+      return <p className="text-medium-brown">Loading...</p>;
+    }
+
+    switch (activeTab) {
+      case 'profile':
+        return (
+          <PersonalInfoSection
+            fullName={fullName}
+            phone={phone}
+            onUpdate={({ full_name, phone: p }) => {
+              setFullName(full_name);
+              setPhone(p);
+            }}
+          />
+        );
+      case 'addresses':
+        return <SavedAddressesSection />;
+      case 'current-orders':
+        return (
+          <OrdersListSection mode="current" highlightOrderNumber={highlightOrder} />
+        );
+      case 'order-history':
+        return <OrdersListSection mode="history" />;
+      case 'wishlist':
+        return <WishlistSection />;
+      case 'settings':
+        return (
+          <AccountSettingsSection
+            preferences={preferences}
+            onPreferencesUpdate={setPreferences}
+            onSignOut={handleSignOut}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="pt-24 pb-20 bg-cream min-h-screen">
-      <div className="max-w-4xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <h1 className="font-serif text-3xl font-bold text-dark-brown mb-8">
-            My Account
-          </h1>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <User className="w-6 h-6 text-gold" />
-                <h2 className="font-semibold text-dark-brown text-lg">Profile</h2>
-              </div>
-              <button
-                onClick={() => editing ? setEditing(false) : setEditing(true)}
-                className="p-2 text-gold hover:bg-gold/10 rounded-lg transition-colors"
+      <div className="max-w-6xl mx-auto px-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <h1 className="font-serif text-3xl font-bold text-dark-brown">My Account</h1>
+            {activeTab !== 'settings' && (
+              <Button
+                variant="ghost"
+                onClick={handleSignOut}
+                className="text-red-500 hover:text-red-600 hover:bg-red-50 self-start sm:self-auto"
               >
-                {editing ? <Save className="w-5 h-5" /> : <Edit className="w-5 h-5" />}
-              </button>
-            </div>
-
-            {editing ? (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-dark-brown mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    value={profile.full_name}
-                    onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
-                    className="w-full p-3 border border-medium-brown/30 rounded-lg focus:outline-none focus:border-gold"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-dark-brown mb-1">Email</label>
-                  <input
-                    type="email"
-                    value={user.email || ''}
-                    disabled
-                    className="w-full p-3 border border-medium-brown/30 rounded-lg bg-gray-50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-dark-brown mb-1">Phone</label>
-                  <input
-                    type="tel"
-                    value={profile.phone}
-                    onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                    className="w-full p-3 border border-medium-brown/30 rounded-lg focus:outline-none focus:border-gold"
-                    placeholder="+91 98765 43210"
-                  />
-                </div>
-                <Button variant="gold" onClick={handleSaveProfile} isLoading={saving}>
-                  Save Changes
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <p className="text-dark-brown"><strong>Name:</strong> {profile.full_name || 'Not set'}</p>
-                <p className="text-dark-brown"><strong>Email:</strong> {user.email}</p>
-                <p className="text-dark-brown"><strong>Phone:</strong> {profile.phone || 'Not set'}</p>
-              </div>
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
             )}
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4 mb-6">
-            <Link to="#" className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
-              <Package className="w-8 h-8 text-gold mb-4" />
-              <h3 className="font-semibold text-dark-brown mb-2">Order History</h3>
-              <p className="text-sm text-medium-brown">View your past orders</p>
-            </Link>
+          <div className="grid lg:grid-cols-[260px_1fr] gap-6">
+            <AccountSidebar
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              userName={fullName || user.email?.split('@')[0]}
+            />
 
-            <Link to="#" className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
-              <MapPin className="w-8 h-8 text-gold mb-4" />
-              <h3 className="font-semibold text-dark-brown mb-2">Addresses</h3>
-              <p className="text-sm text-medium-brown">Manage delivery addresses</p>
-            </Link>
-          </div>
-
-          <div className="text-center">
-            <Button
-              variant="ghost"
-              onClick={handleSignOut}
-              className="text-red-500 hover:text-red-600 hover:bg-red-50"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
+            <div className="bg-white rounded-xl shadow-sm p-6 lg:p-8 min-h-[400px]">
+              {renderSection()}
+            </div>
           </div>
         </motion.div>
       </div>

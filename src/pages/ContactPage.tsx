@@ -52,7 +52,12 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-dark-brown">Email</h3>
-                  <p className="text-medium-brown">hello@kamdhara.com</p>
+                  <a
+                    href="mailto:support@kamdharafarms.com"
+                    className="text-medium-brown hover:text-gold transition-colors"
+                  >
+                    support@kamdharafarms.com
+                  </a>
                 </div>
               </div>
 
@@ -62,7 +67,12 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-dark-brown">Phone</h3>
-                  <p className="text-medium-brown">+91 98765 43210</p>
+                  <a
+                    href="tel:+918766703485"
+                    className="text-medium-brown hover:text-gold transition-colors"
+                  >
+                    +91 87667 03485
+                  </a>
                 </div>
               </div>
 
@@ -74,8 +84,7 @@ export default function ContactPage() {
                   <h3 className="font-semibold text-dark-brown">Address</h3>
                   <p className="text-medium-brown">
                     Kamdhara Farms<br />
-                    Gir, Junagadh District<br />
-                    Gujarat, India - 362560
+                    Baramati, Maharashtra
                   </p>
                 </div>
               </div>
@@ -144,7 +153,7 @@ export default function ContactPage() {
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="w-full p-3 border border-medium-brown/30 rounded-lg focus:outline-none focus:border-gold"
-                      placeholder="+91 98765 43210"
+                      placeholder="+91 87667 03485"
                     />
                   </div>
                 </div>

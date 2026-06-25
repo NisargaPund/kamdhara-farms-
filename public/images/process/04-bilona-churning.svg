@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Placeholder: bilona hand churning">
+  <rect width="800" height="600" fill="#F5EFE4"/>
+  <rect x="250" y="160" width="300" height="280" rx="140" fill="#8B6A4E" opacity="0.15" stroke="#8B6A4E" stroke-width="4"/>
+  <rect x="385" y="120" width="30" height="360" rx="8" fill="#3E2B1F" opacity="0.7"/>
+  <ellipse cx="400" cy="300" rx="90" ry="40" fill="#C8A76A" opacity="0.6"/>
+  <path d="M310 380 Q400 420 490 380" fill="none" stroke="#C8A76A" stroke-width="6" stroke-linecap="round"/>
+  <text x="400" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="36" fill="#3E2B1F" font-weight="bold">Step 4</text>
+  <text x="400" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#C8A76A">Bilona Churning</text>
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#8B6A4E">Replace with farm photo</text>
+</svg>

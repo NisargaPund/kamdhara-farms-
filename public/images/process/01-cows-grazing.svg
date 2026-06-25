@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Placeholder: Gir cows grazing on pasture">
+  <rect width="800" height="600" fill="#E8EFE6"/>
+  <rect y="380" width="800" height="220" fill="#4A6741" opacity="0.25"/>
+  <ellipse cx="220" cy="340" rx="90" ry="55" fill="#8B6A4E" opacity="0.7"/>
+  <ellipse cx="420" cy="355" rx="100" ry="60" fill="#8B6A4E" opacity="0.85"/>
+  <ellipse cx="580" cy="345" rx="85" ry="50" fill="#8B6A4E" opacity="0.7"/>
+  <circle cx="200" cy="290" r="28" fill="#8B6A4E"/>
+  <circle cx="400" cy="300" r="32" fill="#8B6A4E"/>
+  <circle cx="565" cy="295" r="26" fill="#8B6A4E"/>
+  <text x="400" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="36" fill="#3E2B1F" font-weight="bold">Step 1</text>
+  <text x="400" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#C8A76A">Grass-Fed Grazing</text>
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#8B6A4E">Replace with farm photo</text>
+</svg>

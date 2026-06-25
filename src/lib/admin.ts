@@ -1,5 +1,29 @@
-import { supabase } from './supabase';
-import type { AdminStats, Order, Product, ProductFormData, ProductVariant, Profile } from '../types';
+import { supabase, formatSupabaseError } from './supabase';
+import { sendOrderNotification } from './notifications';
+import { NOTIFY_STATUSES } from './orderStatus';
+import type {
+  AdminOrderDetail,
+  AdminStats,
+  Order,
+  Product,
+  ProductFormData,
+  ProductVariant,
+  Profile,
+} from '../types';
+
+const ONLINE_PAYMENT_METHODS = ['upi', 'card'] as const;
+
+export function countsTowardOnlinePaidRevenue(order: {
+  payment_method: string;
+  payment_status: string;
+  status: string;
+}): boolean {
+  return (
+    (ONLINE_PAYMENT_METHODS as readonly string[]).includes(order.payment_method) &&
+    order.payment_status === 'paid' &&
+    order.status !== 'cancelled'
+  );
+}
 
 export async function checkIsAdmin(userId: string): Promise<boolean> {
   const { data, error } = await supabase
@@ -14,7 +38,7 @@ export async function checkIsAdmin(userId: string): Promise<boolean> {
 
 export async function getAdminStats(): Promise<AdminStats> {
   const [ordersRes, productsRes, profilesRes, variantsRes] = await Promise.all([
-    supabase.from('orders').select('id, status, total'),
+    supabase.from('orders').select('id, status, total, payment_method, payment_status'),
     supabase.from('products').select('id'),
     supabase.from('profiles').select('id').eq('is_admin', false),
     supabase.from('product_variants').select('stock').lt('stock', 10),
@@ -22,7 +46,7 @@ export async function getAdminStats(): Promise<AdminStats> {
 
   const orders = ordersRes.data || [];
   const totalRevenue = orders
-    .filter((o) => o.status !== 'cancelled')
+    .filter(countsTowardOnlinePaidRevenue)
     .reduce((sum, o) => sum + (o.total || 0), 0);
 
   return {
@@ -48,20 +72,106 @@ export async function getAdminOrders(): Promise<Order[]> {
   return data || [];
 }
 
+export async function getAdminOrderDetail(orderId: string): Promise<AdminOrderDetail> {
+  const [historyRes, notificationsRes, orderRes] = await Promise.all([
+    supabase
+      .from('order_status_history')
+      .select('*')
+      .eq('order_id', orderId)
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('order_notifications')
+      .select('*')
+      .eq('order_id', orderId)
+      .order('created_at', { ascending: false }),
+    supabase.from('orders').select('user_id').eq('id', orderId).single(),
+  ]);
+
+  if (historyRes.error) throw historyRes.error;
+  if (notificationsRes.error) throw notificationsRes.error;
+
+  let customer: Profile | null = null;
+  if (orderRes.data?.user_id) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', orderRes.data.user_id)
+      .single();
+    customer = profile;
+  }
+
+  return {
+    history: historyRes.data || [],
+    notifications: notificationsRes.data || [],
+    customer,
+  };
+}
+
 export async function updateOrderStatus(
   orderId: string,
   status: string,
-  paymentStatus?: string
+  paymentStatus?: string,
+  extras?: { tracking_number?: string; estimated_delivery?: string; carrier?: string }
 ) {
-  const updates: Record<string, string> = { status };
-  if (paymentStatus) updates.payment_status = paymentStatus;
+  const selectFields = extras
+    ? 'status, payment_status, tracking_number, carrier, estimated_delivery'
+    : 'status, payment_status';
 
-  const { error } = await supabase
+  const { data: existing, error: fetchError } = await supabase
     .from('orders')
-    .update(updates)
-    .eq('id', orderId);
+    .select(selectFields)
+    .eq('id', orderId)
+    .single();
 
-  if (error) throw error;
+  if (fetchError) {
+    throw new Error(formatSupabaseError(fetchError));
+  }
+
+  const previousStatus = existing?.status;
+  const updates: Record<string, string | null> = {};
+
+  if (status !== existing?.status) {
+    updates.status = status;
+  }
+  if (paymentStatus && paymentStatus !== existing?.payment_status) {
+    updates.payment_status = paymentStatus;
+  }
+  if (extras) {
+    if (
+      extras.tracking_number !== undefined &&
+      extras.tracking_number !== (existing?.tracking_number ?? '')
+    ) {
+      updates.tracking_number = extras.tracking_number || null;
+    }
+    if (extras.carrier !== undefined && extras.carrier !== (existing?.carrier ?? '')) {
+      updates.carrier = extras.carrier || null;
+    }
+    if (extras.estimated_delivery !== undefined) {
+      const existingDate = existing?.estimated_delivery?.split('T')[0] ?? '';
+      const nextDate = extras.estimated_delivery || '';
+      if (nextDate !== existingDate) {
+        updates.estimated_delivery = nextDate || null;
+      }
+    }
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return;
+  }
+
+  const { error } = await supabase.from('orders').update(updates).eq('id', orderId);
+
+  if (error) {
+    throw new Error(formatSupabaseError(error));
+  }
+
+  const newStatus = updates.status ?? previousStatus;
+  if (
+    previousStatus !== newStatus &&
+    NOTIFY_STATUSES.includes(newStatus as (typeof NOTIFY_STATUSES)[number])
+  ) {
+    sendOrderNotification({ orderId, type: 'status_update', previousStatus });
+  }
 }
 
 export async function getAdminProducts(): Promise<

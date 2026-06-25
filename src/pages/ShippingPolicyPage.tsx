@@ -13,67 +13,72 @@ export default function ShippingPolicyPage() {
           </h1>
 
           <div className="bg-white rounded-xl shadow-sm p-8 space-y-6">
+            <p className="text-medium-brown">Last updated: June 24, 2025</p>
+
             <section>
-              <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Shipping Charges
-              </h2>
               <p className="text-medium-brown leading-relaxed">
-                We offer FREE shipping on all orders above Rs. 999. For orders below Rs. 999,
-                a flat shipping fee of Rs. 99 applies.
+                All Kamdhara Farms products are shipped using secure packaging designed
+                specifically for glass jars.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Delivery Timeline
+                Order Processing
+              </h2>
+              <p className="text-medium-brown leading-relaxed">
+                Orders are processed within 1-3 business days after payment confirmation.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
+                Delivery Timelines
               </h2>
               <ul className="text-medium-brown space-y-2">
-                <li><strong>Metro Cities:</strong> 3-5 business days</li>
-                <li><strong>Other Cities:</strong> 5-7 business days</li>
-                <li><strong>Remote Areas:</strong> 7-10 business days</li>
+                <li><strong>Maharashtra:</strong> 2-5 Business Days</li>
+                <li><strong>Rest of India:</strong> 3-10 Business Days</li>
               </ul>
             </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Order Tracking
+                Open Box Delivery
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                Once your order is shipped, you will receive an SMS with your tracking number
-                and courier partner details. You can track your order using the courier's
-                website or app.
+                Customers are strongly encouraged to inspect the parcel at the time of delivery.
+              </p>
+              <p className="text-medium-brown leading-relaxed mt-2">
+                Any damage, leakage, breakage, or incorrect product must be reported before
+                accepting the package.
+              </p>
+              <p className="text-medium-brown leading-relaxed mt-2">
+                After delivery acceptance, Kamdhara Farms shall not be responsible for
+                transit-related damages.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Shipping Partners
+                Address Responsibility
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                We work with trusted courier partners including Delhivery, BlueDart, and
-                DTDC to ensure safe and timely delivery of your orders.
+                Customers are responsible for providing accurate shipping information.
+              </p>
+              <p className="text-medium-brown leading-relaxed mt-2">
+                Orders returned due to incorrect address, unavailability, or refusal to accept
+                delivery may attract re-shipping charges.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Packaging
+                Force Majeure
               </h2>
               <p className="text-medium-brown leading-relaxed">
-                All our ghee products are carefully packed in temperature-safe packaging to
-                maintain quality during transit. Glass jars are protected with bubble wrap
-                and sturdy outer boxes to prevent breakage.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="font-serif text-xl font-bold text-dark-brown mb-3">
-                Serviceable Areas
-              </h2>
-              <p className="text-medium-brown leading-relaxed">
-                We deliver to most pin codes across India. If your pin code is not serviceable,
-                you will be notified at checkout. For bulk orders or special delivery requests,
-                please contact us at hello@kamdhara.com.
+                Delivery timelines may be affected by natural disasters, strikes, transportation
+                issues, weather conditions, government restrictions, or other circumstances
+                beyond our control.
               </p>
             </section>
           </div>

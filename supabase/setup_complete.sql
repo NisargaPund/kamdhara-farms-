@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS orders (
   order_number TEXT UNIQUE,
   status TEXT DEFAULT 'pending',
   payment_status TEXT DEFAULT 'pending',
-  payment_method TEXT DEFAULT 'cod',
+  payment_method TEXT DEFAULT 'upi',
   subtotal NUMERIC(10,2) DEFAULT 0,
   shipping_cost NUMERIC(10,2) DEFAULT 0,
   total NUMERIC(10,2) DEFAULT 0,

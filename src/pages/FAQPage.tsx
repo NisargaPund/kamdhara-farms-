@@ -32,8 +32,8 @@ const faqs = [
         answer: 'Metro cities: 3-5 business days. Other cities: 5-7 business days. Remote areas: 7-10 business days. You will receive a tracking number via SMS once your order is shipped.',
       },
       {
-        question: 'Do you offer Cash on Delivery?',
-        answer: 'Yes, Cash on Delivery (COD) is available for all pin codes serviced by our courier partners. There are no additional COD charges. You can also pay via UPI (Google Pay, PhonePe, Paytm) or Credit/Debit cards.',
+        question: 'What payment methods do you accept?',
+        answer: 'We accept prepaid online payments only. You can pay securely via UPI (Google Pay, PhonePe, Paytm) or Credit/Debit cards through Razorpay at checkout. Your order is confirmed only after successful payment.',
       },
     ],
   },

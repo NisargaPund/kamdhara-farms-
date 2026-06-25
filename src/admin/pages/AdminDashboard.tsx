@@ -58,9 +58,9 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <StatCard
-          title="Total Revenue"
+          title="Online Paid Revenue"
           value={formatPrice(stats?.totalRevenue || 0)}
-          subtitle="Excluding cancelled orders"
+          subtitle="UPI & card orders with paid status only"
           icon={<IndianRupee className="w-6 h-6" />}
           color="green"
         />

@@ -5,11 +5,25 @@ import { Check, CreditCard, Smartphone, Truck } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useCartStore } from '../store/cart';
 import { useAuth } from '../lib/auth';
+import { formatSupabaseError } from '../lib/supabase';
 import { createStoreOrder, markOrderPaymentFailed } from '../lib/orders';
+import { sendOrderNotification } from '../lib/notifications';
 import { initiateRazorpayPayment, verifyRazorpayPayment, RAZORPAY_SETUP_HINT } from '../lib/razorpay';
 import { formatPrice } from '../lib/utils';
 import toast from 'react-hot-toast';
 import type { Address } from '../types';
+
+type OnlinePaymentMethod = 'upi' | 'card';
+
+const PAYMENT_METHODS: {
+  id: OnlinePaymentMethod;
+  icon: typeof Smartphone;
+  label: string;
+  desc: string;
+}[] = [
+  { id: 'upi', icon: Smartphone, label: 'UPI', desc: 'Google Pay, PhonePe, Paytm — pay securely via Razorpay' },
+  { id: 'card', icon: CreditCard, label: 'Credit/Debit Card', desc: 'Visa, Mastercard, RuPay — powered by Razorpay' },
+];
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -28,13 +42,12 @@ export default function CheckoutPage() {
     state: '',
     pincode: '',
   });
-  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'upi' | 'card'>('cod');
+  const [paymentMethod, setPaymentMethod] = useState<OnlinePaymentMethod>('upi');
   const [isProcessing, setIsProcessing] = useState(false);
 
   const subtotal = getSubtotal();
   const shipping = subtotal >= 999 ? 0 : 99;
   const total = subtotal + shipping;
-  const isOnlinePayment = paymentMethod === 'upi' || paymentMethod === 'card';
 
   if (items.length === 0) {
     navigate('/cart');
@@ -68,36 +81,29 @@ export default function CheckoutPage() {
     });
   };
 
-  const handleCodOrder = async () => {
-    const order = await createStoreOrder({
-      userId: user?.id || null,
-      paymentMethod: 'cod',
-      subtotal,
-      shipping,
-      total,
-      address,
-      items,
-    });
-    toast.success('Order placed successfully!');
-    completeOrder(order.order_number, order.id);
-  };
+  const handlePlaceOrder = async () => {
+    if (!validateStep1()) return;
 
-  const handleOnlinePayment = async () => {
-    const order = await createStoreOrder({
-      userId: user?.id || null,
-      paymentMethod,
-      subtotal,
-      shipping,
-      total,
-      address,
-      items,
-    });
+    setIsProcessing(true);
+
+    let orderId: string | null = null;
 
     try {
+      const order = await createStoreOrder({
+        userId: user?.id || null,
+        paymentMethod,
+        subtotal,
+        shipping,
+        total,
+        address,
+        items,
+      });
+      orderId = order.id;
+
       const paymentResponse = await initiateRazorpayPayment({
         storeOrderId: order.id,
         amountInPaise: Math.round(total * 100),
-        paymentMethod: paymentMethod as 'upi' | 'card',
+        paymentMethod,
         customer: {
           name: address.full_name,
           email: user?.email,
@@ -106,34 +112,21 @@ export default function CheckoutPage() {
       });
 
       await verifyRazorpayPayment(order.id, paymentResponse);
+      sendOrderNotification({ orderId: order.id, type: 'order_placed' });
       toast.success('Payment successful!');
       completeOrder(order.order_number, order.id);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Payment failed';
-      if (message !== 'Payment cancelled') {
-        await markOrderPaymentFailed(order.id);
-      }
-      throw error;
-    }
-  };
-
-  const handlePlaceOrder = async () => {
-    if (!validateStep1()) return;
-
-    setIsProcessing(true);
-
-    try {
-      if (isOnlinePayment) {
-        await handleOnlinePayment();
-      } else {
-        await handleCodOrder();
-      }
-    } catch (error) {
-      console.error('Order error:', error);
-      const message = error instanceof Error ? error.message : 'Failed to place order';
+      const message = formatSupabaseError(error);
+      console.error('Order error:', message, error);
       if (message === 'Payment cancelled') {
-        toast.error('Payment was cancelled. Your order is saved — you can retry from your cart.');
+        if (orderId) {
+          await markOrderPaymentFailed(orderId);
+        }
+        toast.error('Payment was cancelled. Please try again to complete your order.');
       } else {
+        if (orderId) {
+          await markOrderPaymentFailed(orderId);
+        }
         toast.error(message, { duration: 8000 });
         if (
           !message.toLowerCase().includes('secret') &&
@@ -284,16 +277,15 @@ export default function CheckoutPage() {
               <h2 className="font-serif text-xl font-bold text-dark-brown mb-4">
                 Payment Method
               </h2>
+              <p className="text-sm text-medium-brown mb-4">
+                All orders are prepaid. Pay securely online via Razorpay before your order is confirmed.
+              </p>
               <div className="space-y-3">
-                {[
-                  { id: 'cod', icon: Truck, label: 'Cash on Delivery', desc: 'Pay when you receive your order' },
-                  { id: 'upi', icon: Smartphone, label: 'UPI', desc: 'Google Pay, PhonePe, Paytm — pay securely via Razorpay' },
-                  { id: 'card', icon: CreditCard, label: 'Credit/Debit Card', desc: 'Visa, Mastercard, RuPay — powered by Razorpay' },
-                ].map((method) => (
+                {PAYMENT_METHODS.map((method) => (
                   <button
                     key={method.id}
                     type="button"
-                    onClick={() => setPaymentMethod(method.id as 'cod' | 'upi' | 'card')}
+                    onClick={() => setPaymentMethod(method.id)}
                     className={'w-full p-4 rounded-lg border-2 text-left flex items-center transition-all ' + (
                       paymentMethod === method.id
                         ? 'border-gold bg-gold/10'
@@ -337,9 +329,7 @@ export default function CheckoutPage() {
               <div className="border-b pb-4 mb-4">
                 <h3 className="font-semibold text-dark-brown mb-2">Payment Method</h3>
                 <p className="text-medium-brown">
-                  {paymentMethod === 'cod' && 'Cash on Delivery'}
-                  {paymentMethod === 'upi' && 'UPI (Razorpay)'}
-                  {paymentMethod === 'card' && 'Credit/Debit Card (Razorpay)'}
+                  {paymentMethod === 'upi' ? 'UPI (Razorpay)' : 'Credit/Debit Card (Razorpay)'}
                 </p>
               </div>
 
@@ -373,11 +363,9 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {isOnlinePayment && (
-                <p className="text-sm text-medium-brown mb-4 bg-cream rounded-lg p-3">
-                  You will be redirected to Razorpay secure checkout to complete your {paymentMethod === 'upi' ? 'UPI' : 'card'} payment.
-                </p>
-              )}
+              <p className="text-sm text-medium-brown mb-4 bg-cream rounded-lg p-3">
+                You will be redirected to Razorpay secure checkout to complete your {paymentMethod === 'upi' ? 'UPI' : 'card'} payment. Your order is confirmed only after successful payment.
+              </p>
 
               <div className="flex gap-4">
                 <Button variant="secondary" onClick={() => setStep(2)} className="flex-1">
@@ -390,7 +378,7 @@ export default function CheckoutPage() {
                   isLoading={isProcessing}
                   className="flex-1"
                 >
-                  {isOnlinePayment ? `Pay ${formatPrice(total)}` : 'Place Order'}
+                  Pay {formatPrice(total)}
                 </Button>
               </div>
             </div>

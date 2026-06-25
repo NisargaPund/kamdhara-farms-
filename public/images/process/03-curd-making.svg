@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Placeholder: curd culturing">
+  <rect width="800" height="600" fill="#F5EFE4"/>
+  <ellipse cx="400" cy="340" rx="180" ry="90" fill="#C8A76A" opacity="0.25"/>
+  <ellipse cx="400" cy="320" rx="160" ry="70" fill="#F5EFE4" stroke="#8B6A4E" stroke-width="5"/>
+  <ellipse cx="400" cy="310" rx="130" ry="45" fill="#E8EFE6"/>
+  <circle cx="350" cy="300" r="8" fill="#C8A76A" opacity="0.6"/>
+  <circle cx="420" cy="295" r="6" fill="#C8A76A" opacity="0.5"/>
+  <circle cx="460" cy="310" r="7" fill="#C8A76A" opacity="0.55"/>
+  <text x="400" y="80" text-anchor="middle" font-family="Georgia, serif" font-size="36" fill="#3E2B1F" font-weight="bold">Step 3</text>
+  <text x="400" y="130" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#C8A76A">Curd Culturing</text>
+  <text x="400" y="520" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#8B6A4E">Replace with farm photo</text>
+</svg>

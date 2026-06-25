@@ -24,7 +24,7 @@ export default function OrderSuccessPage() {
         </h1>
 
         <p className="text-medium-brown mb-6">
-          Thank you for your purchase. Your order has been placed successfully.
+          Thank you for your purchase. Your payment was successful and your prepaid order is confirmed.
         </p>
 
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
